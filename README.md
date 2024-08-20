@@ -1,2 +1,2 @@
 # My Personal Reflection and Tech Blog
-<p>Welcome to my Refection on my Journey as a Software Engineer on this website you will acquire knowledge through technical posts and get to know me on a personal level 
+<p>Welcome to my Refection on my Journey as a Software Engineer on this website you will acquire knowledge through technical posts and get to know me on a more personal level.</p> 
