@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', function() {
     const accessKey = '8e158407220a6527b191e43fff9d75b4'; 
     const query = 'html, javascript, css, react, programming, coding';
-    const apiUrl = `http://api.serpstack.com/search?access_key=${accessKey}&query=${query}&engine=google&type=web&device=desktop&location=new york&google_domain=google.com&gl=us&hl=en&page=1&num=25&output=json`;
+    const apiUrl = `https://api.serpstack.com/search?access_key=${accessKey}&query=${query}&engine=google&type=web&device=desktop&location=new york&google_domain=google.com&gl=us&hl=en&page=1&num=25&output=json`;
 
     const techPostsContainer = document.getElementById('tech-posts'); 
     const loadMoreButton = document.createElement('button');
