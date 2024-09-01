@@ -1,6 +1,122 @@
 document.addEventListener('DOMContentLoaded', function() {
-    const accessKey = process.env.SERPSTACK_API_KEY; 
+    const reflectionEntriesContainer = document.getElementById('reflection-entries');
+    const addReflectionButton = document.getElementById('add-reflection');
+    const reflectionTitleInput = document.getElementById('reflection-title');
+    const reflectionAuthorInput = document.getElementById('reflection-author');
+    const reflectionDateInput = document.getElementById('reflection-date');
+    const reflectionTextInput = document.getElementById('reflection-text');
+
+    // Load reflections from localStorage
+    function loadReflections() {
+        const reflections = JSON.parse(localStorage.getItem('reflections')) || [];
+        reflections.forEach(reflection => {
+            addReflectionEntry(reflection.title, reflection.author, reflection.date, reflection.text, false);
+        });
+    }
+
+    // Save reflections to localStorage
+    function saveReflections() {
+        const reflections = [];
+        document.querySelectorAll('.reflection-entry').forEach(entry => {
+            const title = entry.querySelector('.reflection-title').textContent;
+            const author = entry.querySelector('.reflection-author').textContent.replace('Author: ', '');
+            const date = entry.querySelector('.reflection-date').textContent.replace('Date: ', '');
+            const text = entry.querySelector('.reflection-text').textContent;
+            reflections.push({ title, author, date, text });
+        });
+        localStorage.setItem('reflections', JSON.stringify(reflections));
+    }
+
+    // Function to add a reflection entry
+    function addReflectionEntry(title, author, date, text, save = true) {
+        const entryElement = document.createElement('div');
+        entryElement.classList.add('reflection-entry');
+
+        const titleElement = document.createElement('h3');
+        titleElement.classList.add('reflection-title');
+        titleElement.textContent = title;
+
+        const authorElement = document.createElement('p');
+        authorElement.classList.add('reflection-author');
+        authorElement.textContent = `Author: ${author}`;
+
+        const dateElement = document.createElement('p');
+        dateElement.classList.add('reflection-date');
+        dateElement.textContent = `Date: ${date}`;
+
+        const textElement = document.createElement('p');
+        textElement.classList.add('reflection-text');
+        textElement.textContent = text;
+
+        const editButton = document.createElement('button');
+        editButton.textContent = 'Edit';
+        editButton.addEventListener('click', function() {
+            editReflectionEntry(entryElement, titleElement, authorElement, dateElement, textElement);
+        });
+
+        const deleteButton = document.createElement('button');
+        deleteButton.textContent = 'Delete';
+        deleteButton.addEventListener('click', function() {
+            deleteReflectionEntry(entryElement);
+        });
+
+        entryElement.appendChild(titleElement);
+        entryElement.appendChild(authorElement);
+        entryElement.appendChild(dateElement);
+        entryElement.appendChild(textElement);
+        entryElement.appendChild(editButton);
+        entryElement.appendChild(deleteButton);
+
+        reflectionEntriesContainer.appendChild(entryElement);
+
+        if (save) saveReflections(); // Save to localStorage if save is true
+    }
+
+    // Function to handle the add reflection button click
+    addReflectionButton.addEventListener('click', function() {
+        const title = reflectionTitleInput.value;
+        const author = reflectionAuthorInput.value;
+        const date = reflectionDateInput.value;
+        const text = reflectionTextInput.value;
+
+        if (title && author && date && text) {
+            addReflectionEntry(title, author, date, text);
+            reflectionTitleInput.value = '';
+            reflectionAuthorInput.value = '';
+            reflectionDateInput.value = '';
+            reflectionTextInput.value = '';
+        } else {
+            alert('Please fill out all fields.');
+        }
+    });
+
+    // Function to edit a reflection entry
+    function editReflectionEntry(entryElement, titleElement, authorElement, dateElement, textElement) {
+        const newTitle = prompt('Edit Title:', titleElement.textContent);
+        const newAuthor = prompt('Edit Author:', authorElement.textContent.replace('Author: ', ''));
+        const newDate = prompt('Edit Date:', dateElement.textContent.replace('Date: ', ''));
+        const newText = prompt('Edit Reflection:', textElement.textContent);
+
+        if (newTitle && newAuthor && newDate && newText) {
+            titleElement.textContent = newTitle;
+            authorElement.textContent = `Author: ${newAuthor}`;
+            dateElement.textContent = `Date: ${newDate}`;
+            textElement.textContent = newText;
+            saveReflections(); // Save updated reflections to localStorage
+        }
+    }
+
+    // Function to delete a reflection entry
+    function deleteReflectionEntry(entryElement) {
+        reflectionEntriesContainer.removeChild(entryElement);
+        saveReflections(); // Save updated reflections to localStorage
+    }
+
+    // Load reflections on page load
+    loadReflections();
     
+    //Fetching news Post from Serpstack.com
+    const accessKey = process.env.SERPSTACK_API_KEY; 
     const apiUrl = `https://api.serpstack.com/search?access_key=${accessKey}&query=html,javascript,css,react,programming,coding&engine=google&type=web&device=desktop&location=new york&google_domain=google.com&gl=us&hl=en&page=1&num=25&output=json`;
 
     const techPostsContainer = document.getElementById('tech-posts'); 

@@ -48,24 +48,34 @@ header h1 {
     gap: 20px;
 }
 
-.reflection-entry {
-    padding: 20px;
-    background-color: #f0f0f0;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+#reflection-form {
+    margin-top: 20px;
 }
 
-.reflection-entry h3 {
-    font-size: 1.75em;
-    color: black;
+#reflection-title,
+#reflection-author,
+#reflection-date,
+#reflection-text {
+    display: block;
+    width: 100%;
     margin-bottom: 10px;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
 }
 
-.reflection-entry p {
-    font-size: 1em;
-    color: #666;
-    line-height: 1.6;
-    margin-bottom: 10px;
+#add-reflection {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+#add-reflection:hover {
+    background-color: #0056b3;
 }
 
 /* Technical Posts Container */
