@@ -88,18 +88,49 @@ Webpack and Webpack CLI are already included in the project's `package.json`. To
 
 The `webpack.config.js` file is pre-configured to bundle the JavaScript files and handle environment variables. Here’s an example:
 
-```javascript
-const path = require('path');
-const Dotenv = require('dotenv-webpack');
+    ```javascript
+    const path = require('path');
+    const Dotenv = require('dotenv-webpack');
 
-module.exports = {
-    entry: './src/main.js',
-    output: {
+    module.exports = {
+      entry: './src/main.js',
+      output: 
+      {
         filename: 'bundle.js',
         path: path.resolve(__dirname, 'dist'),
-    },
-    plugins: [
+     },
+     plugins: [
         new Dotenv()
-    ],
-};
+     ],
+    };
+
+### Running Webpack
+
+To bundle the JavaScript files, use the following command:
+
+     
+     npx webpack --mode development
+
+This will generate the bundled bundle.js file in the dist directory.
+
+## Contributing
+
+Contributions are always welcome! To contribute:
+
+1. Fork the repository.
+2. Create a new branch (`git checkout -b feature-branch`).
+3. Commit your changes (`git commit -m 'Add some feature'`).
+4. Push to the branch (`git push origin feature-branch`).
+5. Create a new Pull Request.
+
+## Contact Me
+
+I'm always open to connecting with readers, fellow developers, and anyone interested in tech or the topics I write about. You can reach out to me via email.
+
+**Email:** [j.lo128456@gmail.com](mailto:j.lo128456@gmail.com)
+
+---
+
+Thank you for visiting my blog! I hope you find the content both useful and thought-provoking. Don't hesitate to leave comments or reach out to me if you have any questions or feedback.
+
 
