@@ -67,3 +67,48 @@ Before setting up the project, ensure that you have the following installed on y
    ```bash
    git clone https://github.com/yourusername/your-repo-name.git
    cd your-repo-name
+
+2. **Install Dependencies**:
+
+To install all the necessary packages, including Webpack and its plugins, run the following command:
+
+```bash
+npm install
+
+## Using Webpack
+
+Webpack is used to bundle the JavaScript files and manage project dependencies.
+
+### Installing Webpack
+
+Webpack and Webpack CLI are already included in the project's `package.json`. To install them, just run the following command:
+
+```bash
+npm install --save-dev webpack webpack-cli
+
+### Webpack Configuration
+
+The `webpack.config.js` file is pre-configured to bundle the JavaScript files and handle environment variables. Here’s an example:
+
+```javascript
+const path = require('path');
+const Dotenv = require('dotenv-webpack');
+
+module.exports = {
+    entry: './src/main.js',
+    output: {
+        filename: 'bundle.js',
+        path: path.resolve(__dirname, 'dist'),
+    },
+    plugins: [
+        new Dotenv()
+    ],
+};
+### Running Webpack
+
+To bundle the JavaScript files, use the following command:
+
+```bash
+npx webpack --mode development
+This will generate the bundled bundle.js file in the dist directory.
+
