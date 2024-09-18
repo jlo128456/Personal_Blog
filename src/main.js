@@ -241,6 +241,18 @@ addReflectionButton.addEventListener('click', function() {
 
     // Load reflections on page load
     loadReflections();
+
+    // Check if the localStorage has been cleared in this session
+     if (!sessionStorage.getItem('localStorageCleared')) 
+        {
+    // Clear localStorage
+       localStorage.clear();
+       console.log('Local storage cleared on page refresh.');
+    
+    // Set a flag in sessionStorage to prevent clearing localStorage again in the same session
+       sessionStorage.setItem('localStorageCleared', 'true');
+       }
+       
     
     //Fetching news Post from Serpstack.com
     const accessKey = process.env.SERPSTACK_API_KEY; 
