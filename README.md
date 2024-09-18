@@ -24,6 +24,15 @@ Welcome to my personal space where I share my thoughts, reflections, and technic
 ### Recent Entries
 
 Here, I share my personal thoughts, experiences, and reflections on various topics that matter to me. This is a space for introspection, life lessons, and candid stories.
+<!-- Added permanent posts with function and local storage to make post persistent -->
+  - **Permanent Entry 1: [Title of Reflection]**
+  - A brief description or excerpt from the reflection.
+  
+- **Permanent Entry 2: [Title of Reflection]**
+  - A brief description or excerpt from the reflection.
+
+---
+
 
 <!-- Add your personal journal entries below as sub-bullets -->
 

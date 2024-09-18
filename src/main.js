@@ -26,6 +26,82 @@ document.addEventListener('DOMContentLoaded', function() {
         });
         localStorage.setItem('reflections', JSON.stringify(reflections));
     }
+     // Variables for permanent post counters
+     let permLikes = 0;
+     let permDislikes = 0;
+
+     // Like button functionality for the permanent post
+     document.getElementById('perm-like-button').addEventListener('click', function() {
+         permLikes++;
+         this.textContent = `👍 Like (${permLikes})`;
+     });
+
+     // Dislike button functionality for the permanent post
+     document.getElementById('perm-dislike-button').addEventListener('click', function() {
+         permDislikes++;
+         this.textContent = `👎 Dislike (${permDislikes})`;
+     });
+
+     // Edit button functionality for the permanent post
+     document.getElementById('perm-edit-button').addEventListener('click', function() {
+         const newTitle = prompt('Edit Title:', document.getElementById('perm-title').textContent);
+         const newAuthor = prompt('Edit Author:', document.getElementById('perm-author').textContent.replace('Author: ', ''));
+         const newDate = prompt('Edit Date:', document.getElementById('perm-date').textContent.replace('Date: ', ''));
+         const newText = prompt('Edit Reflection:', document.getElementById('perm-text').textContent);
+
+         if (newTitle && newAuthor && newDate && newText) {
+             document.getElementById('perm-title').textContent = newTitle;
+             document.getElementById('perm-author').textContent = `Author: ${newAuthor}`;
+             document.getElementById('perm-date').textContent = `Date: ${newDate}`;
+             document.getElementById('perm-text').textContent = newText;
+         }
+     });
+
+     // Delete button functionality for the permanent post
+     document.getElementById('perm-delete-button').addEventListener('click', function() {
+         if (confirm('Are you sure you want to delete this post?')) {
+             document.querySelector('.permanent-post').remove();
+         }
+     });
+
+     // Variables for permanent post 2 counters
+let perm2Likes = 0;
+let perm2Dislikes = 0;
+
+// Like button functionality for permanent post 2
+document.getElementById('perm2-like-button').addEventListener('click', function() {
+    perm2Likes++;
+    this.textContent = `👍 Like (${perm2Likes})`;
+});
+
+// Dislike button functionality for permanent post 2
+document.getElementById('perm2-dislike-button').addEventListener('click', function() {
+    perm2Dislikes++;
+    this.textContent = `👎 Dislike (${perm2Dislikes})`;
+});
+
+// Edit button functionality for permanent post 2
+document.getElementById('perm2-edit-button').addEventListener('click', function() {
+    const newTitle = prompt('Edit Title:', document.getElementById('perm2-title').textContent);
+    const newAuthor = prompt('Edit Author:', document.getElementById('perm2-author').textContent.replace('Author: ', ''));
+    const newDate = prompt('Edit Date:', document.getElementById('perm2-date').textContent.replace('Date: ', ''));
+    const newText = prompt('Edit Reflection:', document.getElementById('perm2-text').textContent);
+
+    if (newTitle && newAuthor && newDate && newText) {
+        document.getElementById('perm2-title').textContent = newTitle;
+        document.getElementById('perm2-author').textContent = `Author: ${newAuthor}`;
+        document.getElementById('perm2-date').textContent = `Date: ${newDate}`;
+        document.getElementById('perm2-text').textContent = newText;
+    }
+});
+
+// Delete button functionality for permanent post 2
+document.getElementById('perm2-delete-button').addEventListener('click', function() {
+    const confirmDelete = confirm('Are you sure you want to delete this post?');
+    if (confirmDelete) {
+        document.querySelector('.permanent-post:nth-of-type(2)').remove();
+    }
+});
 
     // Function to add a reflection entry
 function addReflectionEntry(title, author, date, text, likes = 0, dislikes = 0, save = true) {
@@ -156,8 +232,11 @@ addReflectionButton.addEventListener('click', function() {
 
     // Function to delete a reflection entry
     function deleteReflectionEntry(entryElement) {
-        reflectionEntriesContainer.removeChild(entryElement);
-        saveReflections(); // Save updated reflections to localStorage
+        const confirmDelete = confirm("Are you sure you want to delete this reflection?");
+        if (confirmDelete) {
+            reflectionEntriesContainer.removeChild(entryElement);
+            saveReflections(); // Save updated reflections to localStorage after deletion
+        }
     }
 
     // Load reflections on page load
