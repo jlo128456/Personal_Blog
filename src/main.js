@@ -28,67 +28,115 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Function to add a reflection entry
-    function addReflectionEntry(title, author, date, text, save = true) {
-        const entryElement = document.createElement('div');
-        entryElement.classList.add('reflection-entry');
+function addReflectionEntry(title, author, date, text, likes = 0, dislikes = 0, save = true) {
+    const entryElement = document.createElement('div');
+    entryElement.classList.add('reflection-entry');
 
-        const titleElement = document.createElement('h3');
-        titleElement.classList.add('reflection-title');
-        titleElement.textContent = title;
+    const titleElement = document.createElement('h3');
+    titleElement.classList.add('reflection-title');
+    titleElement.textContent = title;
 
-        const authorElement = document.createElement('p');
-        authorElement.classList.add('reflection-author');
-        authorElement.textContent = `Author: ${author}`;
+    const authorElement = document.createElement('p');
+    authorElement.classList.add('reflection-author');
+    authorElement.textContent = `Author: ${author}`;
 
-        const dateElement = document.createElement('p');
-        dateElement.classList.add('reflection-date');
-        dateElement.textContent = `Date: ${date}`;
+    const dateElement = document.createElement('p');
+    dateElement.classList.add('reflection-date');
+    dateElement.textContent = `Date: ${date}`;
 
-        const textElement = document.createElement('p');
-        textElement.classList.add('reflection-text');
-        textElement.textContent = text;
+    const textElement = document.createElement('p');
+    textElement.classList.add('reflection-text');
+    textElement.textContent = text;
 
-        const editButton = document.createElement('button');
-        editButton.textContent = 'Edit';
-        editButton.addEventListener('click', function() {
-            editReflectionEntry(entryElement, titleElement, authorElement, dateElement, textElement);
-        });
+    // Like and Dislike Buttons with Counters
+    const likeButton = document.createElement('button');
+    likeButton.textContent = `👍 Like (${likes})`;
+    likeButton.classList.add('like-button');
 
-        const deleteButton = document.createElement('button');
-        deleteButton.textContent = 'Delete';
-        deleteButton.addEventListener('click', function() {
-            deleteReflectionEntry(entryElement);
-        });
+    const dislikeButton = document.createElement('button');
+    dislikeButton.textContent = `👎 Dislike (${dislikes})`;
+    dislikeButton.classList.add('dislike-button');
 
-        entryElement.appendChild(titleElement);
-        entryElement.appendChild(authorElement);
-        entryElement.appendChild(dateElement);
-        entryElement.appendChild(textElement);
-        entryElement.appendChild(editButton);
-        entryElement.appendChild(deleteButton);
-
-        reflectionEntriesContainer.appendChild(entryElement);
-
-        if (save) saveReflections(); // Save to localStorage if save is true
-    }
-
-    // Function to handle the add reflection button click
-    addReflectionButton.addEventListener('click', function() {
-        const title = reflectionTitleInput.value;
-        const author = reflectionAuthorInput.value;
-        const date = reflectionDateInput.value;
-        const text = reflectionTextInput.value;
-
-        if (title && author && date && text) {
-            addReflectionEntry(title, author, date, text);
-            reflectionTitleInput.value = '';
-            reflectionAuthorInput.value = '';
-            reflectionDateInput.value = '';
-            reflectionTextInput.value = '';
-        } else {
-            alert('Please fill out all fields.');
-        }
+    // Increment Like Counter
+    likeButton.addEventListener('click', function() {
+        likes++;
+        likeButton.textContent = `👍 Like (${likes})`;
+        saveReflections(); // Save updated like count to localStorage
     });
+
+    // Increment Dislike Counter
+    dislikeButton.addEventListener('click', function() {
+        dislikes++;
+        dislikeButton.textContent = `👎 Dislike (${dislikes})`;
+        saveReflections(); // Save updated dislike count to localStorage
+    });
+
+    const editButton = document.createElement('button');
+    editButton.textContent = 'Edit';
+    editButton.addEventListener('click', function() {
+        editReflectionEntry(entryElement, titleElement, authorElement, dateElement, textElement);
+    });
+
+    const deleteButton = document.createElement('button');
+    deleteButton.textContent = 'Delete';
+    deleteButton.addEventListener('click', function() {
+        deleteReflectionEntry(entryElement);
+    });
+
+    entryElement.appendChild(titleElement);
+    entryElement.appendChild(authorElement);
+    entryElement.appendChild(dateElement);
+    entryElement.appendChild(textElement);
+    entryElement.appendChild(likeButton);
+    entryElement.appendChild(dislikeButton);
+    entryElement.appendChild(editButton);
+    entryElement.appendChild(deleteButton);
+
+    reflectionEntriesContainer.appendChild(entryElement);
+
+    if (save) saveReflections(); // Save to localStorage if save is true
+}
+
+// Save reflections to localStorage
+function saveReflections() {
+    const reflections = [];
+    document.querySelectorAll('.reflection-entry').forEach(entry => {
+        const title = entry.querySelector('.reflection-title').textContent;
+        const author = entry.querySelector('.reflection-author').textContent.replace('Author: ', '');
+        const date = entry.querySelector('.reflection-date').textContent.replace('Date: ', '');
+        const text = entry.querySelector('.reflection-text').textContent;
+        const likes = parseInt(entry.querySelector('.like-button').textContent.match(/\d+/)[0]); // Extract likes count
+        const dislikes = parseInt(entry.querySelector('.dislike-button').textContent.match(/\d+/)[0]); // Extract dislikes count
+        reflections.push({ title, author, date, text, likes, dislikes });
+    });
+    localStorage.setItem('reflections', JSON.stringify(reflections));
+}
+
+// Load reflections from localStorage
+function loadReflections() {
+    const reflections = JSON.parse(localStorage.getItem('reflections')) || [];
+    reflections.forEach(reflection => {
+        addReflectionEntry(reflection.title, reflection.author, reflection.date, reflection.text, reflection.likes, reflection.dislikes, false);
+    });
+}
+
+// Function to handle the add reflection button click
+addReflectionButton.addEventListener('click', function() {
+    const title = reflectionTitleInput.value;
+    const author = reflectionAuthorInput.value;
+    const date = reflectionDateInput.value;
+    const text = reflectionTextInput.value;
+
+    if (title && author && date && text) {
+        addReflectionEntry(title, author, date, text, 0, 0); // Initialize with 0 likes and dislikes
+        reflectionTitleInput.value = '';
+        reflectionAuthorInput.value = '';
+        reflectionDateInput.value = '';
+        reflectionTextInput.value = '';
+    } else {
+        alert('Please fill out all fields.');
+    }
+});
 
     // Function to edit a reflection entry
     function editReflectionEntry(entryElement, titleElement, authorElement, dateElement, textElement) {
