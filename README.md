@@ -26,13 +26,12 @@ Welcome to my personal space where I share my thoughts, reflections, and technic
 Here, I share my personal thoughts, experiences, and reflections on various topics that matter to me. This is a space for introspection, life lessons, and candid stories.
 <!-- Added permanent posts with function and local storage to make post persistent -->
   - **Permanent Entry 1: [Title of Reflection]**
-  - A brief description or excerpt from the reflection.
+    - A brief description or excerpt from the reflection.
   
-- **Permanent Entry 2: [Title of Reflection]**
-  - A brief description or excerpt from the reflection.
+  - **Permanent Entry 2: [Title of Reflection]**
+    - A brief description or excerpt from the reflection.
 
 ---
-
 
 <!-- Add your personal journal entries below as sub-bullets -->
 
@@ -48,7 +47,7 @@ Here, I share my personal thoughts, experiences, and reflections on various topi
 
 ### Latest Posts
 
-In this section, I dive into the technical world. From front-end development tips and tricks to deep dives into JavaScript, React, CSS, and more, you'll find a variety of technical posts designed to inform and inspire.
+In this section, I dive into the technical world, where you'll find a variety of technical posts designed to inform and inspire.
 
 <!-- Add your technical blog posts below as sub-bullets -->
 
@@ -76,11 +75,7 @@ Before setting up the project, ensure that you have the following installed on y
    ```bash
    git clone https://github.com/yourusername/your-repo-name.git
    cd your-repo-name
-2. **Install Dependencies**:
-  To install all the necessary packages, including Webpack and its plugins, run the following command:
 
-    ```bash
-    npm install
 
  ### Using Webpack
 
@@ -121,6 +116,13 @@ To bundle the JavaScript files, use the following command:
      npx webpack --mode development
 
 This will generate the bundled bundle.js file in the dist directory.
+
+## Explanation: Why the API Key is Hardcoded
+In this project, I've hardcoded the API key for fetching tech news from a third-party API. While hardcoding API keys is generally discouraged in production environments due to security risks, this decision was made to simplify the setup for local testing and demo purposes.
+
+For personal or non-critical projects, this approach can work, but in real-world applications, it’s best to store sensitive information like API keys in environment variables or a backend server to prevent exposure.
+
+If you'd like to run the project locally without a backend, you can continue to use the hardcoded key as provided in the current configuration. However, once the project is hosted, I highly recommend switching to a more secure method for handling sensitive information.
 
 ## Contributing
 
