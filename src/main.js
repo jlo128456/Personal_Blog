@@ -61,6 +61,38 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
+    // Functions for like, dislike, edit, and delete functionalities for permanent post 2
+    let perm2Likes = 0, perm2Dislikes = 0;
+    document.getElementById('perm2-like-button').addEventListener('click', function () {
+        perm2Likes++;
+        this.textContent = `👍 Like (${perm2Likes})`;
+    });
+
+    document.getElementById('perm2-dislike-button').addEventListener('click', function () {
+        perm2Dislikes++;
+        this.textContent = `👎 Dislike (${perm2Dislikes})`;
+    });
+
+    document.getElementById('perm2-edit-button').addEventListener('click', function () {
+        const newTitle = prompt('Edit Title:', document.getElementById('perm2-title').textContent);
+        const newAuthor = prompt('Edit Author:', document.getElementById('perm2-author').textContent.replace('Author: ', ''));
+        const newDate = prompt('Edit Date:', document.getElementById('perm2-date').textContent.replace('Date: ', ''));
+        const newText = prompt('Edit Reflection:', document.getElementById('perm2-text').textContent);
+
+        if (newTitle && newAuthor && newDate && newText) {
+            document.getElementById('perm2-title').textContent = newTitle;
+            document.getElementById('perm2-author').textContent = `Author: ${newAuthor}`;
+            document.getElementById('perm2-date').textContent = `Date: ${newDate}`;
+            document.getElementById('perm2-text').textContent = newText;
+        }
+    });
+
+    document.getElementById('perm2-delete-button').addEventListener('click', function () {
+        if (confirm('Are you sure you want to delete this post?')) {
+            document.querySelector('.permanent-post:nth-of-type(2)').remove();
+        }
+    });
+
     // Function to add a reflection entry
     function addReflectionEntry(title, author, date, text, likes = 0, dislikes = 0, save = true) {
         const entryElement = document.createElement('div');
@@ -155,6 +187,8 @@ document.addEventListener('DOMContentLoaded', function () {
         localStorage.clear();  // Clear localStorage
         sessionStorage.setItem('localStorageCleared', 'true');  // Prevent clearing in the same session
     }
+
+
 
     // Fetch tech news from Newsdata.io
 const apiUrl = `https://newsdata.io/api/1/news?apikey=pub_53833f43b5b84b0c5d65296735964d65cb437&q=chatgpt&country=au&language=en&category=technology `;
