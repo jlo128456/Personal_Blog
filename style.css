@@ -1,7 +1,7 @@
 /* General Styles */
 body {
     font-family: 'Roboto', Arial, sans-serif;
-    background-color: aquamarine;
+    background-color: #ACFFFC; /* Softer background color */
     color: #333;
     margin: 0;
     padding: 0;
@@ -32,7 +32,7 @@ header h1 {
 /* Section Header Styling */
 .section h2 {
     margin: 0;
-    padding: 10px 0;
+    padding: 20px 0; /* More padding to create space */
     text-align: left;
     color: #222;
     border-bottom: 2px solid #ddd;
@@ -40,7 +40,7 @@ header h1 {
 
 /* Personal Journal Section */
 #personal-journal {
-    margin: 20px 0;
+    margin: 40px 0; /* More margin between sections */
 }
 
 #personal-journal .reflection-entries {
@@ -111,24 +111,26 @@ header h1 {
 
 /* Post Description */
 .tech-post p {
-    font-size: 1em;
+    font-size: 1.1em; /* Slightly larger font size */
     color: #666;
-    line-height: 1.6;
+    line-height: 1.8; /* Improved readability with higher line-height */
     margin-bottom: 10px;
 }
 
-/* Read More Link */
-.tech-post a {
-    font-size: 1em;
-    color: #007BFF;
-    text-decoration: none;
-    font-weight: bold;
-    transition: color 0.3s ease;
+/* Like, Dislike, Edit, and Delete Buttons */
+button {
+    background-color: #007bff;
+    color: white;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-right: 10px;
+    font-size: 14px;
 }
 
-.tech-post a:hover {
-    color: #0056b3;
-    text-decoration: underline;
+button:hover {
+    background-color: #0056b3;
 }
 
 /* Footer */
@@ -166,6 +168,6 @@ footer {
     }
 
     .tech-post p, .reflection-entry p {
-        font-size: 0.9em;
+        font-size: 1em;
     }
 }
