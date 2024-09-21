@@ -1,10 +1,104 @@
 document.addEventListener('DOMContentLoaded', function () {
+     // Elements for permanent posts
+       // Elements for permanent posts
+    const permPostElements = [
+        {
+            likeButton: document.getElementById('perm-like-button'),
+            dislikeButton: document.getElementById('perm-dislike-button'),
+            editButton: document.getElementById('perm-edit-button'),
+            deleteButton: document.getElementById('perm-delete-button'),
+            titleElement: document.getElementById('perm-title'),
+            authorElement: document.getElementById('perm-author'),
+            dateElement: document.getElementById('perm-date'),
+            textElement: document.getElementById('perm-text'),
+            postElement: document.querySelector('#perm-post')  // Unique ID for the permanent post container
+        },
+        {
+            likeButton: document.getElementById('perm2-like-button'),
+            dislikeButton: document.getElementById('perm2-dislike-button'),
+            editButton: document.getElementById('perm2-edit-button'),
+            deleteButton: document.getElementById('perm2-delete-button'),
+            titleElement: document.getElementById('perm2-title'),
+            authorElement: document.getElementById('perm2-author'),
+            dateElement: document.getElementById('perm2-date'),
+            textElement: document.getElementById('perm2-text'),
+            postElement: document.querySelector('#perm2-post')  // Unique ID for the second permanent post container
+        }
+    ];
+
+    // Add event listeners to each permanent post's buttons
+    permPostElements.forEach(({ likeButton, dislikeButton, editButton, deleteButton, titleElement, authorElement, dateElement, textElement, postElement }) => {
+        let likes = 0;
+        let dislikes = 0;
+
+        likeButton.addEventListener('click', function () {
+            likes++;
+            likeButton.textContent = `👍 Like (${likes})`;
+        });
+
+        dislikeButton.addEventListener('click', function () {
+            dislikes++;
+            dislikeButton.textContent = `👎 Dislike (${dislikes})`;
+        });
+
+        editButton.addEventListener('click', function () {
+            const newTitle = prompt('Edit Title:', titleElement.textContent);
+            const newAuthor = prompt('Edit Author:', authorElement.textContent.replace('Author: ', ''));
+            const newDate = prompt('Edit Date:', dateElement.textContent.replace('Date: ', ''));
+            const newText = prompt('Edit Reflection:', textElement.textContent);
+
+            if (newTitle && newAuthor && newDate && newText) {
+                titleElement.textContent = newTitle;
+                authorElement.textContent = `Author: ${newAuthor}`;
+                dateElement.textContent = `Date: ${newDate}`;
+                textElement.textContent = newText;
+            }
+        });
+
+        deleteButton.addEventListener('click', function () {
+            if (confirm('Are you sure you want to delete this post?')) {
+                postElement.remove();
+            }
+        });
+    });
     const reflectionEntriesContainer = document.getElementById('reflection-entries');
     const addReflectionButton = document.getElementById('add-reflection');
     const reflectionTitleInput = document.getElementById('reflection-title');
     const reflectionAuthorInput = document.getElementById('reflection-author');
     const reflectionDateInput = document.getElementById('reflection-date');
     const reflectionTextInput = document.getElementById('reflection-text');
+    
+    // Utility functions for Like, Dislike, Edit, and Delete functionality
+    function handleLikeDislike(button, counter, type) {
+        button.textContent = type === 'like' ? `👍 Like (${counter})` : `👎 Dislike (${counter})`;
+        button.addEventListener('click', function () {
+            counter++;
+            button.textContent = type === 'like' ? `👍 Like (${counter})` : `👎 Dislike (${counter})`;
+            saveReflections();  // Save updated like/dislike count to localStorage
+        });
+    }
+
+    function handleEditPost(titleElement, authorElement, dateElement, textElement) {
+        const newTitle = prompt('Edit Title:', titleElement.textContent);
+        const newAuthor = prompt('Edit Author:', authorElement.textContent.replace('Author: ', ''));
+        const newDate = prompt('Edit Date:', dateElement.textContent.replace('Date: ', ''));
+        const newText = prompt('Edit Reflection:', textElement.textContent);
+
+        if (newTitle && newAuthor && newDate && newText) {
+            titleElement.textContent = newTitle;
+            authorElement.textContent = `Author: ${newAuthor}`;
+            dateElement.textContent = `Date: ${newDate}`;
+            textElement.textContent = newText;
+            saveReflections();  // Save edited reflection to localStorage
+        }
+    }
+
+    function handleDeletePost(entryElement) {
+        if (confirm('Are you sure you want to delete this post?')) {
+            entryElement.remove();
+            saveReflections();  // Update localStorage after deletion
+        }
+    }
 
     // Load reflections from localStorage
     function loadReflections() {
@@ -22,76 +116,12 @@ document.addEventListener('DOMContentLoaded', function () {
             const author = entry.querySelector('.reflection-author').textContent.replace('Author: ', '');
             const date = entry.querySelector('.reflection-date').textContent.replace('Date: ', '');
             const text = entry.querySelector('.reflection-text').textContent;
-            const likes = parseInt(entry.querySelector('.like-button').textContent.match(/\d+/)[0]); // Extract likes count
-            const dislikes = parseInt(entry.querySelector('.dislike-button').textContent.match(/\d+/)[0]); // Extract dislikes count
+            const likes = parseInt(entry.querySelector('.like-button').textContent.match(/\d+/)[0]);
+            const dislikes = parseInt(entry.querySelector('.dislike-button').textContent.match(/\d+/)[0]);
             reflections.push({ title, author, date, text, likes, dislikes });
         });
         localStorage.setItem('reflections', JSON.stringify(reflections));
     }
-
-    // Functions for like, dislike, edit, and delete functionalities for permanent posts
-    let permLikes = 0, permDislikes = 0;
-    document.getElementById('perm-like-button').addEventListener('click', function () {
-        permLikes++;
-        this.textContent = `👍 Like (${permLikes})`;
-    });
-
-    document.getElementById('perm-dislike-button').addEventListener('click', function () {
-        permDislikes++;
-        this.textContent = `👎 Dislike (${permDislikes})`;
-    });
-
-    document.getElementById('perm-edit-button').addEventListener('click', function () {
-        const newTitle = prompt('Edit Title:', document.getElementById('perm-title').textContent);
-        const newAuthor = prompt('Edit Author:', document.getElementById('perm-author').textContent.replace('Author: ', ''));
-        const newDate = prompt('Edit Date:', document.getElementById('perm-date').textContent.replace('Date: ', ''));
-        const newText = prompt('Edit Reflection:', document.getElementById('perm-text').textContent);
-
-        if (newTitle && newAuthor && newDate && newText) {
-            document.getElementById('perm-title').textContent = newTitle;
-            document.getElementById('perm-author').textContent = `Author: ${newAuthor}`;
-            document.getElementById('perm-date').textContent = `Date: ${newDate}`;
-            document.getElementById('perm-text').textContent = newText;
-        }
-    });
-
-    document.getElementById('perm-delete-button').addEventListener('click', function () {
-        if (confirm('Are you sure you want to delete this post?')) {
-            document.querySelector('.permanent-post').remove();
-        }
-    });
-
-    // Functions for like, dislike, edit, and delete functionalities for permanent post 2
-    let perm2Likes = 0, perm2Dislikes = 0;
-    document.getElementById('perm2-like-button').addEventListener('click', function () {
-        perm2Likes++;
-        this.textContent = `👍 Like (${perm2Likes})`;
-    });
-
-    document.getElementById('perm2-dislike-button').addEventListener('click', function () {
-        perm2Dislikes++;
-        this.textContent = `👎 Dislike (${perm2Dislikes})`;
-    });
-
-    document.getElementById('perm2-edit-button').addEventListener('click', function () {
-        const newTitle = prompt('Edit Title:', document.getElementById('perm2-title').textContent);
-        const newAuthor = prompt('Edit Author:', document.getElementById('perm2-author').textContent.replace('Author: ', ''));
-        const newDate = prompt('Edit Date:', document.getElementById('perm2-date').textContent.replace('Date: ', ''));
-        const newText = prompt('Edit Reflection:', document.getElementById('perm2-text').textContent);
-
-        if (newTitle && newAuthor && newDate && newText) {
-            document.getElementById('perm2-title').textContent = newTitle;
-            document.getElementById('perm2-author').textContent = `Author: ${newAuthor}`;
-            document.getElementById('perm2-date').textContent = `Date: ${newDate}`;
-            document.getElementById('perm2-text').textContent = newText;
-        }
-    });
-
-    document.getElementById('perm2-delete-button').addEventListener('click', function () {
-        if (confirm('Are you sure you want to delete this post?')) {
-            document.querySelector('.permanent-post:nth-of-type(2)').remove();
-        }
-    });
 
     // Function to add a reflection entry
     function addReflectionEntry(title, author, date, text, likes = 0, dislikes = 0, save = true) {
@@ -116,49 +146,22 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Like and Dislike Buttons with Counters
         const likeButton = document.createElement('button');
-        likeButton.textContent = `👍 Like (${likes})`;
-        likeButton.classList.add('like-button');
-
         const dislikeButton = document.createElement('button');
-        dislikeButton.textContent = `👎 Dislike (${dislikes})`;
-        dislikeButton.classList.add('dislike-button');
-
-        likeButton.addEventListener('click', function () {
-            likes++;
-            likeButton.textContent = `👍 Like (${likes})`;
-            saveReflections(); // Save updated like count to localStorage
-        });
-
-        dislikeButton.addEventListener('click', function () {
-            dislikes++;
-            dislikeButton.textContent = `👎 Dislike (${dislikes})`;
-            saveReflections(); // Save updated dislike count to localStorage
-        });
+        handleLikeDislike(likeButton, likes, 'like');
+        handleLikeDislike(dislikeButton, dislikes, 'dislike');
 
         const editButton = document.createElement('button');
         editButton.textContent = 'Edit';
-        editButton.addEventListener('click', function () {
-            editReflectionEntry(entryElement, titleElement, authorElement, dateElement, textElement);
-        });
+        editButton.addEventListener('click', () => handleEditPost(titleElement, authorElement, dateElement, textElement));
 
         const deleteButton = document.createElement('button');
         deleteButton.textContent = 'Delete';
-        deleteButton.addEventListener('click', function () {
-            deleteReflectionEntry(entryElement);
-        });
+        deleteButton.addEventListener('click', () => handleDeletePost(entryElement));
 
-        entryElement.appendChild(titleElement);
-        entryElement.appendChild(authorElement);
-        entryElement.appendChild(dateElement);
-        entryElement.appendChild(textElement);
-        entryElement.appendChild(likeButton);
-        entryElement.appendChild(dislikeButton);
-        entryElement.appendChild(editButton);
-        entryElement.appendChild(deleteButton);
-
+        entryElement.append(titleElement, authorElement, dateElement, textElement, likeButton, dislikeButton, editButton, deleteButton);
         reflectionEntriesContainer.appendChild(entryElement);
 
-        if (save) saveReflections(); // Save to localStorage if save is true
+        if (save) saveReflections();  // Save to localStorage if save is true
     }
 
     // Handle reflection add button click
@@ -169,7 +172,7 @@ document.addEventListener('DOMContentLoaded', function () {
         const text = reflectionTextInput.value;
 
         if (title && author && date && text) {
-            addReflectionEntry(title, author, date, text, 0, 0); // Initialize with 0 likes and dislikes
+            addReflectionEntry(title, author, date, text, 0, 0);  // Initialize with 0 likes and dislikes
             reflectionTitleInput.value = '';
             reflectionAuthorInput.value = '';
             reflectionDateInput.value = '';
@@ -182,105 +185,104 @@ document.addEventListener('DOMContentLoaded', function () {
     // Load reflections on page load
     loadReflections();
 
-    // Check if localStorage has been cleared in this session
-    if (!sessionStorage.getItem('localStorageCleared')) {
-        localStorage.clear();  // Clear localStorage
-        sessionStorage.setItem('localStorageCleared', 'true');  // Prevent clearing in the same session
-    }
+    // Fetch tech news from currents API
+    const apiUrl = 'https://api.currentsapi.services/v1/latest-news?category=programming&apiKey=rkSh-hKTu-WUdJJQvOXX4cHyU6oCfeb82Lf5F8jVR6pX24Qb';
+    const techPostsContainer = document.getElementById('tech-posts');
+    const loadMoreButton = document.createElement('button');
+    const loadingIndicator = document.createElement('div');
+    loadingIndicator.textContent = 'Loading...';
+    techPostsContainer.appendChild(loadingIndicator);
+    
+    let articles = [];
+    let currentIndex = 0;
+    const initialPosts = 10;
+    const additionalPosts = 15;
+    
+    loadMoreButton.textContent = 'Load More';
+    loadMoreButton.className = 'load-more';
+    loadMoreButton.style.display = 'none';  // Initially hidden
+    
+    fetch(apiUrl)
+        .then(response => response.json())
+        .then(data => {
+            techPostsContainer.removeChild(loadingIndicator);  // Remove the loading indicator
 
-
-
-    // Fetch tech news from Newsdata.io
-const apiUrl = `https://newsdata.io/api/1/news?apikey=pub_53833f43b5b84b0c5d65296735964d65cb437&q=chatgpt&country=au&language=en&category=technology `;
-
-const techPostsContainer = document.getElementById('tech-posts');
-const loadMoreButton = document.createElement('button');
-const loadingIndicator = document.createElement('div');
-loadingIndicator.textContent = 'Loading...';
-techPostsContainer.appendChild(loadingIndicator);
-
-let articles = [];
-let currentIndex = 0;
-const initialPosts = 10;
-const additionalPosts = 15;
-
-loadMoreButton.textContent = 'Load More';
-loadMoreButton.className = 'load-more';
-loadMoreButton.style.display = 'none';  // Initially hidden
-
-// Fetch tech news
-fetch(apiUrl)
-    .then(response => response.json())
-    .then(data => {
-        if (loadingIndicator.parentNode) {
-            techPostsContainer.removeChild(loadingIndicator);  // Remove loading indicator
+            if (data.news && data.news.length > 0) {
+                articles = data.news;  // Store the articles for pagination
+                displayTechPosts(initialPosts);  // Display initial set of posts
+                setupLoadMoreButton();  // Setup "Load More" button if there are more posts
+            } else {
+                const noResultsElement = document.createElement('p');
+                noResultsElement.textContent = 'No results found.';
+                techPostsContainer.appendChild(noResultsElement);
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching tech news:', error);
+            const errorElement = document.createElement('p');
+            errorElement.textContent = 'Failed to load the tech news. Please try again later.';
+            techPostsContainer.appendChild(errorElement);
+        });
+    
+    // Function to display a subset of tech posts
+    function displayTechPosts(postsToDisplay) {
+        const maxIndex = Math.min(currentIndex + postsToDisplay, articles.length);
+        for (let i = currentIndex; i < maxIndex; i++) {
+            const post = articles[i];
+            const postElement = document.createElement('div');
+            postElement.classList.add('tech-post');
+    
+            const titleElement = document.createElement('h3');
+            titleElement.textContent = post.title || 'No title available';
+            postElement.appendChild(titleElement);
+    
+            const dateElement = document.createElement('p');
+            dateElement.classList.add('post-date');
+            dateElement.textContent = `Published on: ${post.published || 'Date not available'}`;
+            postElement.appendChild(dateElement);
+    
+            const descriptionElement = document.createElement('p');
+            descriptionElement.textContent = post.description || 'No description available';
+            postElement.appendChild(descriptionElement);
+    
+            const linkElement = document.createElement('a');
+            linkElement.href = post.url;
+            linkElement.target = '_blank';
+            linkElement.textContent = 'Read more';
+            postElement.appendChild(linkElement);
+    
+            // Like and Dislike buttons with counters
+            const likeButton = document.createElement('button');
+            const dislikeButton = document.createElement('button');
+            handleLikeDislike(likeButton, 0, 'like');
+            handleLikeDislike(dislikeButton, 0, 'dislike');
+    
+            const buttonsContainer = document.createElement('div');
+            buttonsContainer.appendChild(likeButton);
+            buttonsContainer.appendChild(dislikeButton);
+            postElement.appendChild(buttonsContainer);
+    
+            techPostsContainer.appendChild(postElement);
         }
-
-        if (data.results && data.results.length > 0) {
-            articles = data.results;  // Newsdata.io uses "results" instead of "articles"
-            displayTechPosts(initialPosts);  // Display initial posts
-            setupLoadMoreButton();  // Setup "Load More" button
+        currentIndex = maxIndex;  // Update the current index
+    }
+    
+    // Setup the "Load More" button
+    function setupLoadMoreButton() {
+        if (currentIndex < articles.length) {
+            loadMoreButton.style.display = 'block';  // Show the button if there are more posts to load
+            loadMoreButton.addEventListener('click', onLoadMoreClick);
+            techPostsContainer.appendChild(loadMoreButton);
         } else {
-            const noResultsElement = document.createElement('p');
-            noResultsElement.textContent = 'No results found.';
-            techPostsContainer.appendChild(noResultsElement);
+            loadMoreButton.style.display = 'none';  // Hide the button if no more posts
         }
-    })
-    .catch(error => {
-        console.error('Error fetching tech news:', error);
-        const errorElement = document.createElement('p');
-        errorElement.textContent = 'Failed to load tech news. Please try again later.';
-        techPostsContainer.appendChild(errorElement);
-    });
-
-// Function to display tech posts
-function displayTechPosts(postsToDisplay) {
-    const maxIndex = Math.min(currentIndex + postsToDisplay, articles.length);
-    for (let i = currentIndex; i < maxIndex; i++) {
-        const post = articles[i];
-        const postElement = document.createElement('div');
-        postElement.classList.add('tech-post');
-
-        const titleElement = document.createElement('h3');
-        titleElement.textContent = post.title || 'No title available';
-        postElement.appendChild(titleElement);
-
-        const dateElement = document.createElement('p');
-        dateElement.classList.add('post-date');
-        const publishDate = post.pubDate || 'Date not available';  // Newsdata.io uses "pubDate"
-        dateElement.textContent = `Published on: ${publishDate}`;
-        postElement.appendChild(dateElement);
-
-        const descriptionElement = document.createElement('p');
-        descriptionElement.textContent = post.description || 'No description available';
-        postElement.appendChild(descriptionElement);
-
-        const linkElement = document.createElement('a');
-        linkElement.href = post.link || '#';  // Newsdata.io uses "link" for the article URL
-        linkElement.target = '_blank';
-        linkElement.textContent = 'Read more';
-        postElement.appendChild(linkElement);
-
-        techPostsContainer.appendChild(postElement);
     }
-    currentIndex = maxIndex;  // Update current index
-}
-
-// Setup "Load More" button
-function setupLoadMoreButton() {
-    if (currentIndex < articles.length) {
-        loadMoreButton.style.display = 'block';
-        loadMoreButton.addEventListener('click', onLoadMoreClick);
-        techPostsContainer.appendChild(loadMoreButton);
+    
+    // Load more posts when the "Load More" button is clicked
+    function onLoadMoreClick() {
+        displayTechPosts(additionalPosts);  // Load more posts
+        if (currentIndex >= articles.length) {
+            loadMoreButton.style.display = 'none';  // Hide the button if all posts are loaded
+        }
     }
-}
-
-// Load more posts on "Load More" button click
-function onLoadMoreClick() {
-    displayTechPosts(additionalPosts);  // Load more posts
-    if (currentIndex >= articles.length) {
-        loadMoreButton.style.display = 'none';  // Hide button if all posts loaded
-    }
-}
-
 });
