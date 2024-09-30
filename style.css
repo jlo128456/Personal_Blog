@@ -1,173 +1,137 @@
-/* General Styles */
-body {
-    font-family: 'Roboto', Arial, sans-serif;
-    background-color: #ACFFFC; /* Softer background color */
-    color: #333;
+/* General styles */
+body, html {
     margin: 0;
     padding: 0;
+    font-family: 'Arial', 'Helvetica', sans-serif;
+    background-color: aquamarine;
 }
 
-/* Container */
 .container {
-    width: 80%;
+    max-width: 1200px;
     margin: 0 auto;
     padding: 20px;
-    background-color: white;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
 }
 
-/* Header */
-header {
-    text-align: center;
-    padding: 20px 0;
+/* Section styles */
+.section {
+    margin-bottom: 20px;
 }
 
-header h1 {
-    margin: 0;
-    font-size: 2.5em;
+h1, h2 {
+    font-family: 'Arial', 'Helvetica', sans-serif;
+    font-weight: bold;
+    font-size: 2.8rem;
     color: #333;
 }
 
-/* Section Header Styling */
-.section h2 {
-    margin: 0;
-    padding: 20px 0; /* More padding to create space */
-    text-align: left;
-    color: #222;
-    border-bottom: 2px solid #ddd;
+/* Flexbox for all post containers */
+.permanent-posts, .reflection-entries, #tech-posts {
+    display: flex !important;  /* Ensure flex is applied */
+    flex-wrap: wrap;           /* Allow wrapping to new rows */
+    gap: 20px;                 /* Add space between cards */
+    justify-content: space-between;
 }
 
-/* Personal Journal Section */
-#personal-journal {
-    margin: 40px 0; /* More margin between sections */
+/* Reset any block display inherited by the parent */
+.permanent-posts, .reflection-entries, #tech-posts {
+    display: flex !important;  /* Force flex display */
+    flex-wrap: wrap;
 }
 
-#personal-journal .reflection-entries {
+/* Individual post card */
+.post-entry {
+    flex: 1 1 calc(33.333% - 40px); /* Three posts per row with spacing */
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.05);
+    min-height: 300px; /* Ensure all posts have the same minimum height */
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    justify-content: space-between; /* Spread out content */
+    transition: transform 0.3s ease; /* Smooth scaling effect on hover */
 }
 
-#reflection-form {
-    margin-top: 20px;
+.post-entry:hover {
+    transform: scale(1.02); /* Slightly enlarge card on hover */
 }
 
-#reflection-title,
-#reflection-author,
-#reflection-date,
-#reflection-text {
-    display: block;
-    width: 100%;
-    margin-bottom: 10px;
-    padding: 10px;
-    border-radius: 5px;
-    border: 1px solid #ddd;
+/* Ensure the Read More button is at the bottom */
+.post-entry a.read-more-link {
+    margin-top: auto;
 }
 
-#add-reflection {
-    background-color: #007bff;
+/* Responsive layout */
+@media (max-width: 1024px) {
+    .post-entry {
+        flex: 1 1 calc(50% - 40px); /* Two posts per row on tablet */
+    }
+}
+
+@media (max-width: 768px) {
+    .post-entry {
+        flex: 1 1 100%; /* Full width on mobile */
+    }
+}
+
+/* Button styling */
+button, .read-more-link {
+    padding: 10px 20px;
+    margin: 5px 0;
+    background-color: #007BFF;
     color: white;
-    padding: 12px 24px;
     border: none;
-    border-radius: 5px;
+    border-radius: 8px;
     cursor: pointer;
-    font-size: 16px;
+    text-align: center;
+    text-decoration: none;
     transition: background-color 0.3s ease;
 }
 
-#add-reflection:hover {
+button:hover, .read-more-link:hover {
     background-color: #0056b3;
 }
 
-/* Technical Posts Container */
-#tech-posts {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-}
-
-/* Individual Post Container */
-.tech-post {
-    padding: 20px;
-    background-color: white; /* White background for each post */
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-
-/* Post Hover Effect */
-.tech-post:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
-}
-
-/* Post Title */
-.tech-post h3 {
-    font-size: 1.75em;
-    color: #333;
-    margin-bottom: 10px;
-}
-
-/* Post Description */
-.tech-post p {
-    font-size: 1.1em; /* Slightly larger font size */
-    color: #666;
-    line-height: 1.8; /* Improved readability with higher line-height */
-    margin-bottom: 10px;
-}
-
-/* Like, Dislike, Edit, and Delete Buttons */
-button {
-    background-color: #007bff;
-    color: white;
-    padding: 8px 16px;
-    border: none;
+/* Like and Dislike button styling */
+.like-button, .dislike-button {
+    background-color: white;
+    color: black;
+    border: 1px solid #ddd;
     border-radius: 5px;
     cursor: pointer;
     margin-right: 10px;
-    font-size: 14px;
+    padding: 10px 15px;
+    transition: background-color 0.3s ease;
+}  
+
+.like-button:hover, .dislike-button:hover {
+    background-color: #007BFF;
+    color: white;
 }
 
-button:hover {
-    background-color: #0056b3;
+/* Modal styling */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    align-items: center;
 }
 
-/* Footer */
-footer {
-    text-align: center;
-    padding: 40px 0;
-    background-color: #333;
-    color: #fff;
+.modal.active {
+    display: flex;
 }
 
-.footer-content a {
-    color: #fff;
-    text-decoration: underline;
-}
-
-/* Responsive Adjustments */
-@media (max-width: 768px) {
-    .container {
-        width: 95%;
-        padding: 0 15px;
-    }
-
-    .section h2 {
-        padding: 10px 15px;
-    }
-}
-
-@media (max-width: 600px) {
-    .tech-post, .reflection-entry {
-        padding: 15px;
-    }
-
-    .tech-post h3, .reflection-entry h3 {
-        font-size: 1.5em;
-    }
-
-    .tech-post p, .reflection-entry p {
-        font-size: 1em;
-    }
+.modal-content {
+    background-color: white;
+    padding: 25px;
+    border-radius: 10px;
+    width: 90%;
+    max-width: 500px;
+    box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.2);
 }

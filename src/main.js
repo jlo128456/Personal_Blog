@@ -1,288 +1,229 @@
-document.addEventListener('DOMContentLoaded', function () {
-     // Elements for permanent posts
-       // Elements for permanent posts
-    const permPostElements = [
-        {
-            likeButton: document.getElementById('perm-like-button'),
-            dislikeButton: document.getElementById('perm-dislike-button'),
-            editButton: document.getElementById('perm-edit-button'),
-            deleteButton: document.getElementById('perm-delete-button'),
-            titleElement: document.getElementById('perm-title'),
-            authorElement: document.getElementById('perm-author'),
-            dateElement: document.getElementById('perm-date'),
-            textElement: document.getElementById('perm-text'),
-            postElement: document.querySelector('#perm-post')  // Unique ID for the permanent post container
-        },
-        {
-            likeButton: document.getElementById('perm2-like-button'),
-            dislikeButton: document.getElementById('perm2-dislike-button'),
-            editButton: document.getElementById('perm2-edit-button'),
-            deleteButton: document.getElementById('perm2-delete-button'),
-            titleElement: document.getElementById('perm2-title'),
-            authorElement: document.getElementById('perm2-author'),
-            dateElement: document.getElementById('perm2-date'),
-            textElement: document.getElementById('perm2-text'),
-            postElement: document.querySelector('#perm2-post')  // Unique ID for the second permanent post container
-        }
+document.addEventListener('DOMContentLoaded', () => {
+    // Helper to select elements by ID
+    const $ = id => document.getElementById(id),
+
+    // Store DOM containers and elements
+    containers = {
+        reflectionEntries: $('reflection-entries'),
+        permanentPosts: $('permanent-posts-container'),
+        techPosts: $('tech-posts'),
+        reflectionModal: $('reflection-modal'),
+        modalForm: $('modal-reflection-form'),
+        modalTitle: $('modal-reflection-title'),
+        modalAuthor: $('modal-reflection-author'),
+        modalDate: $('modal-reflection-date'),
+        modalText: $('modal-reflection-text'),
+        modalClose: $('modal-close'),
+        postDetailView: $('post-detail-view'),
+        readMoreContent: $('read-more-content'),
+        homeButton: $('home-button'),
+        mainContent: $('main-content')
+    },
+
+    // Utility to load and save data to localStorage
+    storage = {
+        save: (key, data) => localStorage.setItem(key, JSON.stringify(data)),
+        load: key => JSON.parse(localStorage.getItem(key)) || []
+    };
+
+    // Default permanent posts
+    const defaultPermanentPosts = [
+        { title: "Researching API Key Hiding", author: "Jeff", date: "2024-09-01", text: "After a few hours of researching on Google and Stack Overflow, I was able to learn how to hide my API key from the outside world using an environment file. After a few attempts, I achieved my objective.", likeCount: 0, dislikeCount: 0 },
+        { title: "Writing a Blog", author: "Jeff", date: "2024-09-18", text: "Over the past two days, I started writing my technical blog and posted it on Dev.to. I believe I did the best I could on the topic of 'Why you should hide your API key.'", likeCount: 0, dislikeCount: 0 }
     ];
 
-    // Add event listeners to each permanent post's buttons
-    permPostElements.forEach(({ likeButton, dislikeButton, editButton, deleteButton, titleElement, authorElement, dateElement, textElement, postElement }) => {
-        let likes = 0;
-        let dislikes = 0;
+    // Load posts or set defaults
+    let loadedPermanentPosts = storage.load('permanentPosts');
+    let permanentPosts = loadedPermanentPosts.length ? loadedPermanentPosts : defaultPermanentPosts;
+    let reflections = storage.load('reflections');
+    let allTechPosts = []; // Store fetched tech posts
+    let postsPerPage = 5; // Posts per page for pagination
+    let currentIndex = 0; // Track pagination
 
-        likeButton.addEventListener('click', function () {
-            likes++;
-            likeButton.textContent = `👍 Like (${likes})`;
-        });
+    // Create new element helper
+    const createEl = (tag, props) => Object.assign(document.createElement(tag), props);
 
-        dislikeButton.addEventListener('click', function () {
-            dislikes++;
-            dislikeButton.textContent = `👎 Dislike (${dislikes})`;
-        });
+    // Set innerHTML safely
+    const safeSetInnerHTML = (element, content) => element ? element.innerHTML = content : console.error('Element not found');
 
-        editButton.addEventListener('click', function () {
-            const newTitle = prompt('Edit Title:', titleElement.textContent);
-            const newAuthor = prompt('Edit Author:', authorElement.textContent.replace('Author: ', ''));
-            const newDate = prompt('Edit Date:', dateElement.textContent.replace('Date: ', ''));
-            const newText = prompt('Edit Reflection:', textElement.textContent);
+    // Handle Like/Dislike button functionality
+    const handleLikeDislike = (btn, post, type, id, isReflection) => {
+        post[type === 'like' ? 'likeCount' : 'dislikeCount'] = (post[type === 'like' ? 'likeCount' : 'dislikeCount'] || 0) + 1;
+        btn.textContent = `${type === 'like' ? '👍 Like' : '👎 Dislike'} (${post[type === 'like' ? 'likeCount' : 'dislikeCount']})`;
+        storage.save(isReflection ? 'reflections' : 'permanentPosts', isReflection ? reflections : permanentPosts);
+    };
 
-            if (newTitle && newAuthor && newDate && newText) {
-                titleElement.textContent = newTitle;
-                authorElement.textContent = `Author: ${newAuthor}`;
-                dateElement.textContent = `Date: ${newDate}`;
-                textElement.textContent = newText;
-            }
-        });
+    // Add post entry (for reflections, permanent, or tech posts)
+    const addPostEntry = (post, container, id = null, isTech = false, isReflection = false) => {
+        const entry = createEl('div', { className: 'post-entry' }),
+        likeDislikeButtons = ['👍 Like', '👎 Dislike'].map((txt, i) => createEl('button', {
+            className: i === 0 ? 'like-button' : 'dislike-button',
+            textContent: `${txt} (${i === 0 ? post.likeCount || 0 : post.dislikeCount || 0})`,
+            onclick: () => handleLikeDislike(likeDislikeButtons[i], post, i === 0 ? 'like' : 'dislike', id, isReflection)
+        }));
 
-        deleteButton.addEventListener('click', function () {
-            if (confirm('Are you sure you want to delete this post?')) {
-                postElement.remove();
-            }
-        });
-    });
-    const reflectionEntriesContainer = document.getElementById('reflection-entries');
-    const addReflectionButton = document.getElementById('add-reflection');
-    const reflectionTitleInput = document.getElementById('reflection-title');
-    const reflectionAuthorInput = document.getElementById('reflection-author');
-    const reflectionDateInput = document.getElementById('reflection-date');
-    const reflectionTextInput = document.getElementById('reflection-text');
-    
-    // Utility functions for Like, Dislike, Edit, and Delete functionality
-    function handleLikeDislike(button, counter, type) {
-        button.textContent = type === 'like' ? `👍 Like (${counter})` : `👎 Dislike (${counter})`;
-        button.addEventListener('click', function () {
-            counter++;
-            button.textContent = type === 'like' ? `👍 Like (${counter})` : `👎 Dislike (${counter})`;
-            saveReflections();  // Save updated like/dislike count to localStorage
-        });
-    }
+        entry.append(
+            createEl('h3', { textContent: post.title }),
+            createEl('p', { textContent: post.date || 'No Date' }),
+            createEl('p', { textContent: post.text || post.description }),
+            ...likeDislikeButtons
+        );
 
-    function handleEditPost(titleElement, authorElement, dateElement, textElement) {
-        const newTitle = prompt('Edit Title:', titleElement.textContent);
-        const newAuthor = prompt('Edit Author:', authorElement.textContent.replace('Author: ', ''));
-        const newDate = prompt('Edit Date:', dateElement.textContent.replace('Date: ', ''));
-        const newText = prompt('Edit Reflection:', textElement.textContent);
-
-        if (newTitle && newAuthor && newDate && newText) {
-            titleElement.textContent = newTitle;
-            authorElement.textContent = `Author: ${newAuthor}`;
-            dateElement.textContent = `Date: ${newDate}`;
-            textElement.textContent = newText;
-            saveReflections();  // Save edited reflection to localStorage
-        }
-    }
-
-    function handleDeletePost(entryElement) {
-        if (confirm('Are you sure you want to delete this post?')) {
-            entryElement.remove();
-            saveReflections();  // Update localStorage after deletion
-        }
-    }
-
-    // Load reflections from localStorage
-    function loadReflections() {
-        const reflections = JSON.parse(localStorage.getItem('reflections')) || [];
-        reflections.forEach(reflection => {
-            addReflectionEntry(reflection.title, reflection.author, reflection.date, reflection.text, reflection.likes, reflection.dislikes, false);
-        });
-    }
-
-    // Save reflections to localStorage
-    function saveReflections() {
-        const reflections = [];
-        document.querySelectorAll('.reflection-entry').forEach(entry => {
-            const title = entry.querySelector('.reflection-title').textContent;
-            const author = entry.querySelector('.reflection-author').textContent.replace('Author: ', '');
-            const date = entry.querySelector('.reflection-date').textContent.replace('Date: ', '');
-            const text = entry.querySelector('.reflection-text').textContent;
-            const likes = parseInt(entry.querySelector('.like-button').textContent.match(/\d+/)[0]);
-            const dislikes = parseInt(entry.querySelector('.dislike-button').textContent.match(/\d+/)[0]);
-            reflections.push({ title, author, date, text, likes, dislikes });
-        });
-        localStorage.setItem('reflections', JSON.stringify(reflections));
-    }
-
-    // Function to add a reflection entry
-    function addReflectionEntry(title, author, date, text, likes = 0, dislikes = 0, save = true) {
-        const entryElement = document.createElement('div');
-        entryElement.classList.add('reflection-entry');
-
-        const titleElement = document.createElement('h3');
-        titleElement.classList.add('reflection-title');
-        titleElement.textContent = title;
-
-        const authorElement = document.createElement('p');
-        authorElement.classList.add('reflection-author');
-        authorElement.textContent = `Author: ${author}`;
-
-        const dateElement = document.createElement('p');
-        dateElement.classList.add('reflection-date');
-        dateElement.textContent = `Date: ${date}`;
-
-        const textElement = document.createElement('p');
-        textElement.classList.add('reflection-text');
-        textElement.textContent = text;
-
-        // Like and Dislike Buttons with Counters
-        const likeButton = document.createElement('button');
-        const dislikeButton = document.createElement('button');
-        handleLikeDislike(likeButton, likes, 'like');
-        handleLikeDislike(dislikeButton, dislikes, 'dislike');
-
-        const editButton = document.createElement('button');
-        editButton.textContent = 'Edit';
-        editButton.addEventListener('click', () => handleEditPost(titleElement, authorElement, dateElement, textElement));
-
-        const deleteButton = document.createElement('button');
-        deleteButton.textContent = 'Delete';
-        deleteButton.addEventListener('click', () => handleDeletePost(entryElement));
-
-        entryElement.append(titleElement, authorElement, dateElement, textElement, likeButton, dislikeButton, editButton, deleteButton);
-        reflectionEntriesContainer.appendChild(entryElement);
-
-        if (save) saveReflections();  // Save to localStorage if save is true
-    }
-
-    // Handle reflection add button click
-    addReflectionButton.addEventListener('click', function () {
-        const title = reflectionTitleInput.value;
-        const author = reflectionAuthorInput.value;
-        const date = reflectionDateInput.value;
-        const text = reflectionTextInput.value;
-
-        if (title && author && date && text) {
-            addReflectionEntry(title, author, date, text, 0, 0);  // Initialize with 0 likes and dislikes
-            reflectionTitleInput.value = '';
-            reflectionAuthorInput.value = '';
-            reflectionDateInput.value = '';
-            reflectionTextInput.value = '';
+        // For permanent posts and reflections, add Edit/Delete buttons
+        if (!isTech) {
+            ['Edit', 'Delete'].map((txt, i) => entry.append(createEl('button', {
+                textContent: txt, className: i === 0 ? 'edit-button' : 'delete-button',
+                onclick: () => i === 0 ? editPost(post, id, isReflection) : deletePost(id, entry, isReflection)
+            })));
         } else {
-            alert('Please fill out all fields.');
+            // For tech posts, add "Read More" button
+            entry.append(createEl('a', {
+                textContent: 'Read More', href: '#', className: 'read-more-link',
+                onclick: e => { e.preventDefault(); openReadMorePage(post.url); }
+            }));
         }
+
+        container.appendChild(entry);
+    };
+
+    // Load posts into the specified container
+    const loadPosts = (posts, container, isTech = false, isReflection = false) => {
+        posts.map((post, id) => addPostEntry(post, container, id, isTech, isReflection));
+    };
+
+    // Open the "Read More" page for tech posts
+    const openReadMorePage = url => {
+        containers.mainContent.style.display = 'none'; // Hide main content
+        containers.postDetailView.style.display = 'block'; // Show detailed view
+        fetch(url).then(res => res.ok ? res.text() : Promise.reject(`Error: ${res.status}`))
+            .then(data => safeSetInnerHTML(containers.readMoreContent, data))
+            .catch(err => safeSetInnerHTML(containers.readMoreContent, `<p>Error: ${err}</p>`));
+    };
+
+    // Edit post functionality (for reflections and permanent posts)
+    const editPost = (post, id, isReflection) => {
+        ['title', 'author', 'date', 'text'].map(k => containers[`modal${k.charAt(0).toUpperCase() + k.slice(1)}`].value = post[k]);
+        toggleModal(true);
+
+        // Remove existing event listener before adding a new one
+        containers.modalForm.onsubmit = null;
+        containers.modalForm.onsubmit = e => {
+            e.preventDefault();
+            ['title', 'author', 'date', 'text'].map(k => post[k] = containers[`modal${k.charAt(0).toUpperCase() + k.slice(1)}`].value);
+            storage.save(isReflection ? 'reflections' : 'permanentPosts', isReflection ? reflections : permanentPosts);
+            reloadPosts(isReflection ? containers.reflectionEntries : containers.permanentPosts, isReflection ? reflections : permanentPosts);
+            toggleModal(false);
+        };
+    };
+
+    // Delete post functionality
+    const deletePost = (id, postEl, isReflection) => {
+        const targetArray = isReflection ? reflections : permanentPosts;
+        targetArray.splice(id, 1);
+        if (!targetArray.length && !isReflection) defaultPermanentPosts.forEach(post => permanentPosts.push(post));
+        storage.save(isReflection ? 'reflections' : 'permanentPosts', isReflection ? reflections : permanentPosts);
+        postEl.remove();
+    };
+
+    // Reload posts in the container
+    const reloadPosts = (container, posts, isTech = false, isReflection = false) => {
+        container.textContent = ''; // Clear container
+        loadPosts(posts, container, isTech, isReflection); // Reload posts
+    };
+
+    // Fetch tech posts from the API
+    const fetchTechPosts = () => {
+        fetch('https://api.currentsapi.services/v1/latest-news?category=programming&apiKey=ZZyZV2CXWjXwq_AnBcr_A_CdcRq4K1q4xArsDdaVfTIBNY4-')
+            .then(res => res.json())
+            .then(data => {
+                allTechPosts = data.news || [];
+                if (allTechPosts.length) {
+                    displayTechPosts(0, postsPerPage);
+                } else {
+                    containers.techPosts.append(createEl('p', { textContent: 'No tech posts available.' }));
+                }
+            })
+            .catch(err => {
+                console.error("Failed to fetch tech posts:", err);
+                containers.techPosts.append(createEl('p', { textContent: 'Failed to load tech posts.' }));
+            });
+    };
+
+    // Display tech posts with pagination
+    const displayTechPosts = (start, count) => {
+        containers.techPosts.textContent = '';
+        loadPosts(allTechPosts.slice(start, start + count), containers.techPosts, true);
+        updateButtons();
+    };
+
+    // Update pagination buttons
+    const updateButtons = () => {
+        let loadMoreBtn = containers.techPosts.querySelector('.load-more');
+        let loadLessBtn = containers.techPosts.querySelector('.load-less');
+
+        if (!loadMoreBtn && !loadLessBtn) {
+            loadMoreBtn = createEl('button', { textContent: 'Load More', className: 'load-more', onclick: loadMorePosts });
+            loadLessBtn = createEl('button', { textContent: 'Load Less', className: 'load-less', onclick: loadLessPosts });
+            containers.techPosts.append(loadMoreBtn, loadLessBtn);
+        }
+
+        loadMoreBtn.style.display = currentIndex >= allTechPosts.length ? 'none' : 'block';
+        loadLessBtn.style.display = currentIndex > postsPerPage ? 'block' : 'none';
+    };
+
+    // Load more tech posts
+    const loadMorePosts = () => displayTechPosts(0, Math.min(currentIndex += postsPerPage, allTechPosts.length));
+
+    // Load fewer tech posts
+    const loadLessPosts = () => displayTechPosts(0, Math.max(currentIndex -= postsPerPage, postsPerPage));
+
+    // Toggle modal visibility
+    const toggleModal = show => containers.reflectionModal.classList.toggle('active', show);
+
+    // Event listener for Home button
+    containers.homeButton.addEventListener('click', () => {
+        containers.postDetailView.style.display = 'none';
+        containers.mainContent.style.display = 'block';
     });
 
-    // Load reflections on page load
-    loadReflections();
+    // Close modal on close button click
+    containers.modalClose.addEventListener('click', () => toggleModal(false));
 
-    // Fetch tech news from currents API
-    const apiUrl = 'https://api.currentsapi.services/v1/latest-news?category=programming&apiKey=rkSh-hKTu-WUdJJQvOXX4cHyU6oCfeb82Lf5F8jVR6pX24Qb';
-    const techPostsContainer = document.getElementById('tech-posts');
-    const loadMoreButton = document.createElement('button');
-    const loadingIndicator = document.createElement('div');
-    loadingIndicator.textContent = 'Loading...';
-    techPostsContainer.appendChild(loadingIndicator);
-    
-    let articles = [];
-    let currentIndex = 0;
-    const initialPosts = 10;
-    const additionalPosts = 15;
-    
-    loadMoreButton.textContent = 'Load More';
-    loadMoreButton.className = 'load-more';
-    loadMoreButton.style.display = 'none';  // Initially hidden
-    
-    fetch(apiUrl)
-        .then(response => response.json())
-        .then(data => {
-            techPostsContainer.removeChild(loadingIndicator);  // Remove the loading indicator
-
-            if (data.news && data.news.length > 0) {
-                articles = data.news;  // Store the articles for pagination
-                displayTechPosts(initialPosts);  // Display initial set of posts
-                setupLoadMoreButton();  // Setup "Load More" button if there are more posts
-            } else {
-                const noResultsElement = document.createElement('p');
-                noResultsElement.textContent = 'No results found.';
-                techPostsContainer.appendChild(noResultsElement);
-            }
-        })
-        .catch(error => {
-            console.error('Error fetching tech news:', error);
-            const errorElement = document.createElement('p');
-            errorElement.textContent = 'Failed to load the tech news. Please try again later.';
-            techPostsContainer.appendChild(errorElement);
+    // If "Add Reflection" button exists, set up event listener
+    const addNewReflectionButton = $('add-new-reflection');
+    if (addNewReflectionButton) {
+        addNewReflectionButton.addEventListener('click', () => {
+            containers.modalForm.reset();
+            toggleModal(true);
         });
-    
-    // Function to display a subset of tech posts
-    function displayTechPosts(postsToDisplay) {
-        const maxIndex = Math.min(currentIndex + postsToDisplay, articles.length);
-        for (let i = currentIndex; i < maxIndex; i++) {
-            const post = articles[i];
-            const postElement = document.createElement('div');
-            postElement.classList.add('tech-post');
-    
-            const titleElement = document.createElement('h3');
-            titleElement.textContent = post.title || 'No title available';
-            postElement.appendChild(titleElement);
-    
-            const dateElement = document.createElement('p');
-            dateElement.classList.add('post-date');
-            dateElement.textContent = `Published on: ${post.published || 'Date not available'}`;
-            postElement.appendChild(dateElement);
-    
-            const descriptionElement = document.createElement('p');
-            descriptionElement.textContent = post.description || 'No description available';
-            postElement.appendChild(descriptionElement);
-    
-            const linkElement = document.createElement('a');
-            linkElement.href = post.url;
-            linkElement.target = '_blank';
-            linkElement.textContent = 'Read more';
-            postElement.appendChild(linkElement);
-    
-            // Like and Dislike buttons with counters
-            const likeButton = document.createElement('button');
-            const dislikeButton = document.createElement('button');
-            handleLikeDislike(likeButton, 0, 'like');
-            handleLikeDislike(dislikeButton, 0, 'dislike');
-    
-            const buttonsContainer = document.createElement('div');
-            buttonsContainer.appendChild(likeButton);
-            buttonsContainer.appendChild(dislikeButton);
-            postElement.appendChild(buttonsContainer);
-    
-            techPostsContainer.appendChild(postElement);
-        }
-        currentIndex = maxIndex;  // Update the current index
     }
-    
-    // Setup the "Load More" button
-    function setupLoadMoreButton() {
-        if (currentIndex < articles.length) {
-            loadMoreButton.style.display = 'block';  // Show the button if there are more posts to load
-            loadMoreButton.addEventListener('click', onLoadMoreClick);
-            techPostsContainer.appendChild(loadMoreButton);
-        } else {
-            loadMoreButton.style.display = 'none';  // Hide the button if no more posts
-        }
-    }
-    
-    // Load more posts when the "Load More" button is clicked
-    function onLoadMoreClick() {
-        displayTechPosts(additionalPosts);  // Load more posts
-        if (currentIndex >= articles.length) {
-            loadMoreButton.style.display = 'none';  // Hide the button if all posts are loaded
-        }
-    }
+
+    // Form submission event listener (add new reflection)
+    containers.modalForm.addEventListener('submit', e => {
+        e.preventDefault();
+        const reflection = {
+            title: containers.modalTitle.value,
+            author: containers.modalAuthor.value,
+            date: containers.modalDate.value,
+            text: containers.modalText.value,
+            likeCount: 0,
+            dislikeCount: 0
+        };
+        reflections.push(reflection);
+        storage.save('reflections', reflections);
+        addPostEntry(reflection, containers.reflectionEntries, reflections.length - 1, false, true);
+        toggleModal(false);
+        containers.modalForm.reset();
+    });
+
+    // Log reflection title input changes
+    containers.modalTitle.addEventListener('input', e => console.log(`Title changed to: ${e.target.value}`));
+
+    // Log when author field loses focus
+    containers.modalAuthor.addEventListener('blur', e => console.log(`Author field lost focus with value: ${e.target.value}`));
+
+    // Load reflections and permanent posts, then fetch tech posts
+    loadPosts(reflections, containers.reflectionEntries, false, true);
+    reloadPosts(containers.permanentPosts, permanentPosts);
+    fetchTechPosts();
 });

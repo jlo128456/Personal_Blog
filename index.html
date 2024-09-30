@@ -2,8 +2,9 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Jeff's Reflections & Technical Blog</title>
-    <link rel="stylesheet" href="./style.css">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
@@ -11,67 +12,66 @@
             <h1>Jeff's Reflections & Technical Blog</h1>
         </header>
 
-        <section id="personal-journal" class="section">
-            <h2>Personal Reflections</h2>
+        <!-- Main Content Area (with all posts) -->
+        <main id="main-content">
+           
+            <!-- Permanent Posts Section -->
+            <section id="permanent-posts" class="section">
+                <h2>Permanent Posts</h2>
+                <div id="permanent-posts-container" class="permanent-posts">
+                    <!-- Permanent posts will be dynamically loaded here -->
+                </div>
+            </section>
 
-            <!-- Permanent Post1 -->
-            <div class="reflection-entry permanent-post">
-                <h3 id="perm-title">Researching ways to Hide API key from public</h3>
-                <p class="reflection-author" id="perm-author">Author: Jeff</p>
-                <p class="reflection-date" id="perm-date">Date: 2024-09-01</p>
-                <p class="reflection-text" id="perm-text">"After a few hours of researching on Google and Stack Overflow, I was able to learn how to hide my API key from the outside world using an environment file. After a few attempts, I achieved my objective. I also updated my personal blog to allow users to add reflections. I am very pleased with this outcome, and now I can go to sleep and enjoy the rest of my weekend without overthinking.
-                </p>
-                <!-- Like and Dislike buttons with counters -->
-                <button id="perm-like-button">👍 Like (0)</button>
-                <button id="perm-dislike-button">👎 Dislike (0)</button>
-                <button id="perm-edit-button">Edit</button>
-                <button id="perm-delete-button">Delete</button>
+            <!-- Reflections Section -->
+            <section id="personal-journal" class="section">
+                <h2>Personal Reflections</h2>
+                <button id="add-new-reflection" class="btn">Add Reflection</button>
+                
+                <!-- Container for dynamically added reflection entries -->
+                <div id="reflection-entries" class="reflection-entries">
+                    <!-- Reflection entries will be dynamically loaded here -->
+                </div>
+            </section>
+
+            <!-- Technical Blog Section -->
+            <section id="tech-blog" class="section">
+                <h2>Technical Blog</h2>
+                <div id="tech-posts" class="tech-posts-card">
+                    <!-- Tech posts will be dynamically loaded here -->
+                </div>
+            </section>
+       
+        </main>
+
+        <!-- Post Detail View for "Read More" -->
+        <div id="post-detail-view" style="display: none;">
+            <!-- Post content will be rendered here -->
+            <button id="home-button" class="btn">Home</button>
+        </div>
+
+        <!-- Modal for Adding/Editing Reflections -->
+        <div id="reflection-modal" class="modal">
+            <div class="modal-content">
+                <h2 id="modal-title">Add Reflection</h2>
+                <form id="modal-reflection-form">
+                    <input type="text" id="modal-reflection-title" placeholder="Title" required />
+                    <input type="text" id="modal-reflection-author" placeholder="Author" required />
+                    <input type="date" id="modal-reflection-date" required />
+                    <textarea id="modal-reflection-text" placeholder="Reflection" required></textarea>
+                    <button type="submit" class="btn">Save Reflection</button>
+                    <button type="button" id="modal-close" class="btn btn-close">Cancel</button>
+                </form>
             </div>
+        </div>
 
-            <!-- Permanent Post2 -->
-            <div class="reflection-entry permanent-post">
-                <h3 id="perm2-title">Writing my first technical Blog</h3>
-                <p class="reflection-author" id="perm2-author">Author: Jeff</p>
-                <p class="reflection-date" id="perm2-date">Date: 2024-09-18</p>
-                <p class="reflection-text" id="perm2-text">
-                    Over the past two days, I started writing my technical blog and posted it on Dev.to. I believe I did the best I could on the topic of 'Why you should hide your API key.' I had to research the topic to ensure I provided accurate information to the public.
-                </p>
-                <!-- Like and Dislike buttons with counters -->
-                <button id="perm2-like-button">👍 Like (0)</button>
-                <button id="perm2-dislike-button">👎 Dislike (0)</button>
-                <button id="perm2-edit-button">Edit</button>
-                <button id="perm2-delete-button">Delete</button>
-            </div>
-
-            <div id="reflection-entries" class="reflection-entries">
-                <!-- Personal reflections will go here -->
-            </div>
-
-            <!-- Form to add a new reflection -->
-            <div id="reflection-form">
-                <input type="text" id="reflection-title" placeholder="Title" required>
-                <input type="text" id="reflection-author" placeholder="Author" required>
-                <input type="date" id="reflection-date" required>
-                <textarea id="reflection-text" placeholder="Write your reflection here..." required></textarea>
-                <button id="add-reflection">Add Reflection</button>
-            </div>
-        </section>
-
-        <section id="tech-blog" class="section">
-            <h2>Technical Blog</h2>
-            <div id="tech-posts" class="tech-posts">
-                <!-- Technical blog posts will be inserted here dynamically -->
-            </div>
-        </section>
-
+        <!-- Footer -->
         <footer>
-            <p>Contact me</p>
-            <div class="footer-content">
-                <p>Email: <a href="mailto:j.lo128456@gmail.com"><strong>j.lo128456@gmail.com</strong></a></p>
-            </div>
+            <p>Contact me at <a href="mailto:j.lo128456@gmail.com"><strong>j.lo128456@gmail.com</strong></a></p>
         </footer>
     </div>
 
+    <!-- Link to external JavaScript file -->
     <script src="./src/main.js"></script>
 </body>
 </html>
