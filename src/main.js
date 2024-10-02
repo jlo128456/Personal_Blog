@@ -208,9 +208,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // Toggle modal visibility
     const toggleModal = show => containers.reflectionModal.classList.toggle('active', show);
 
-    // Event listener for Home button to return to the main content layout
+    // Event listener for Home button to return to the main content layout or reload the page
     containers.homeButton.addEventListener('click', () => {
-        showMainContent();
+        location.reload(); // Reload the current page
     });
 
     // Close modal on close button click
