@@ -32,12 +32,6 @@ h1, h2 {
     justify-content: space-between;
 }
 
-/* Reset any block display inherited by the parent */
-.permanent-posts, .reflection-entries, #tech-posts {
-    display: flex !important;  /* Force flex display */
-    flex-wrap: wrap;
-}
-
 /* Individual post card */
 .post-entry {
     flex: 1 1 calc(33.333% - 40px); /* Three posts per row with spacing */
@@ -50,11 +44,12 @@ h1, h2 {
     display: flex;
     flex-direction: column;
     justify-content: space-between; /* Spread out content */
-    transition: transform 0.3s ease; /* Smooth scaling effect on hover */
+    transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smooth scaling effect on hover */
 }
 
 .post-entry:hover {
     transform: scale(1.02); /* Slightly enlarge card on hover */
+    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.1); /* Add shadow on hover */
 }
 
 /* Ensure the Read More button is at the bottom */
@@ -86,11 +81,12 @@ button, .read-more-link {
     cursor: pointer;
     text-align: center;
     text-decoration: none;
-    transition: background-color 0.3s ease;
+    transition: background-color 0.3s ease, transform 0.3s ease; /* Smoother button effects */
 }
 
 button:hover, .read-more-link:hover {
     background-color: #0056b3;
+    transform: scale(1.05); /* Add slight scaling effect to buttons */
 }
 
 /* Like and Dislike button styling */
@@ -100,9 +96,9 @@ button:hover, .read-more-link:hover {
     border: 1px solid #ddd;
     border-radius: 5px;
     cursor: pointer;
-    margin-right: 10px;
+    margin-top: auto;
     padding: 10px 15px;
-    transition: background-color 0.3s ease;
+    transition: background-color 0.3s ease, color 0.3s ease; /* Smooth transitions */
 }  
 
 .like-button:hover, .dislike-button:hover {
@@ -134,4 +130,36 @@ button:hover, .read-more-link:hover {
     width: 90%;
     max-width: 500px;
     box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.2);
+}
+
+/* Main content and post detail view */
+#main-content {
+    display: block; /* Ensure the main content is visible by default */
+}
+
+#post-detail-view {
+    display: none; /* Ensure post detail view is hidden by default */
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+#read-more-content {
+    font-size: 1rem;
+    line-height: 1.6;
+}
+
+#home-button {
+    margin-top: 20px;
+    padding: 10px 20px;
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+#home-button:hover {
+    background-color: #0056b3;
 }
