@@ -62,7 +62,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         entry.append(
             createEl('h3', { textContent: post.title }),
-            createEl('p', { textContent: post.date || 'No Date' }),
+            createEl('p', { textContent: post.date || 'No Date' }), // Use date field for all posts
             createEl('p', { textContent: post.text || post.description })
         );
 
@@ -153,22 +153,39 @@ document.addEventListener('DOMContentLoaded', () => {
         loadPosts(posts, container, isTech, isReflection); // Reload posts
     };
 
-    // Fetch tech posts from Dev.to API without API key
+    // Fetch tech posts from Dev.to API with multiple tags and display dates
     const fetchTechPosts = () => {
-        fetch('https://dev.to/api/articles') // No API key needed for public articles
-        .then(res => res.json())
-        .then(data => {
-            allTechPosts = data || [];
-            if (allTechPosts.length) {
-                displayTechPosts(0, postsPerPage);
-            } else {
-                containers.techPosts.append(createEl('p', { textContent: 'No tech posts available.' }));
-            }
-        })
-        .catch(err => {
-            console.error("Failed to fetch tech posts:", err);
-            containers.techPosts.append(createEl('p', { textContent: 'Failed to load tech posts.' }));
-        });
+        const tags = ['javascript', 'web-development', 'html', 'css'];
+        const fetchPromises = tags.map(tag =>
+            fetch(`https://dev.to/api/articles?tag=${tag}`)
+            .then(res => res.json())
+            .catch(err => {
+                console.error(`Failed to fetch articles for ${tag}:`, err);
+                return []; // Return an empty array in case of an error for this tag
+            })
+        );
+
+        // Wait for all tag fetches to complete and combine results
+        Promise.all(fetchPromises)
+            .then(results => {
+                allTechPosts = results.flat().map(post => ({
+                    title: post.title,
+                    date: post.published_at.split('T')[0], // Extract date part of published_at
+                    text: post.description,
+                    url: post.url,
+                    likeCount: 0,
+                    dislikeCount: 0
+                }));
+                if (allTechPosts.length) {
+                    displayTechPosts(0, postsPerPage); // Display the first page of posts
+                } else {
+                    containers.techPosts.append(createEl('p', { textContent: 'No tech posts available.' }));
+                }
+            })
+            .catch(err => {
+                console.error("Failed to fetch tech posts:", err);
+                containers.techPosts.append(createEl('p', { textContent: 'Failed to load tech posts.' }));
+            });
     };
 
     // Display tech posts with pagination
