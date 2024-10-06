@@ -1,7 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     const $ = id => document.getElementById(id);
 
-    // Store DOM containers and elements
     const containers = {
         reflectionEntries: $('reflection-entries'),
         permanentPosts: $('permanent-posts-container'),
@@ -16,7 +15,9 @@ document.addEventListener('DOMContentLoaded', () => {
         postDetailView: $('post-detail-view'),
         readMoreContent: $('read-more-content'),
         homeButton: $('home-button'),
-        mainContent: $('main-content')
+        mainContent: $('main-content'),
+        techDateFilter: $('tech-date-filter'),
+        addNewReflection: $('add-new-reflection')
     };
 
     const storage = {
@@ -25,19 +26,19 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const defaultPermanentPosts = [
-        { title: "Researching API Key Hiding", author: "Jeff", date: "2024-09-01", text: "After a few hours of researching...", likeCount: 0, dislikeCount: 0 },
-        { title: "Writing a Blog", author: "Jeff", date: "2024-09-18", text: "Over the past two days, I started writing...", likeCount: 0, dislikeCount: 0 }
+        { title: "Researching API Key Hiding", author: "Jeff", date: "2024-09-01", text: "After a few hours of researching on Google and Stack Overflow, I was able to learn how to hide my API key from the outside world using an environment file. After a few attempts, I achieved my objective.", likeCount: 0, dislikeCount: 0 },
+        { title: "Writing a Blog", author: "Jeff", date: "2024-09-18", text: "Over the past two days, I started writing my technical blog and posted it on Dev.to. I believe I did the best I could on the topic of 'Why you should hide your API key.", likeCount: 0, dislikeCount: 0 }
     ];
 
     let permanentPosts = storage.load('permanentPosts').length ? storage.load('permanentPosts') : defaultPermanentPosts;
     let reflections = storage.load('reflections');
     let allTechPosts = [];
+    let filteredTechPosts = [];
     let postsPerPage = 5;
     let currentIndex = postsPerPage;
 
-    // Helper functions
     const createEl = (tag, props) => Object.assign(document.createElement(tag), props);
-    const clearContainer = container => container.replaceChildren(); // Clear container efficiently
+    const clearContainer = container => container.replaceChildren();
     const saveData = (key, data) => storage.save(key, data);
 
     const handleLikeDislike = (btn, post, type, isReflection) => {
@@ -48,17 +49,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const createButton = (text, className, onclick) => createEl('button', { textContent: text, className, onclick });
 
+    // Ensure that like/dislike buttons are appended properly
     const addPostEntry = (post, container, id = null, isTech = false, isReflection = false) => {
         const entry = createEl('div', { className: 'post-entry' });
+        
+        // Create like and dislike buttons
+        const likeDislike = ['👍 Like', '👎 Dislike'].map((txt, i) => createButton(
+            `${txt} (${i === 0 ? post.likeCount || 0 : post.dislikeCount || 0})`,
+            i === 0 ? 'like-button' : 'dislike-button',
+            () => handleLikeDislike(event.target, post, i === 0 ? 'like' : 'dislike', isReflection)
+        ));
 
+        // Append the post details and buttons
         entry.append(
             createEl('h3', { textContent: post.title }),
             createEl('p', { textContent: post.date || 'No Date' }),
             createEl('p', { textContent: post.text || post.description }),
-            createEl('div', { className: 'like-dislike-container' }, [
-                createButton(`👍 Like (${post.likeCount || 0})`, 'like-button', () => handleLikeDislike(event.target, post, 'like', isReflection)),
-                createButton(`👎 Dislike (${post.dislikeCount || 0})`, 'dislike-button', () => handleLikeDislike(event.target, post, 'dislike', isReflection))
-            ])
+            ...likeDislike // Spread the like/dislike buttons into the entry
         );
 
         if (isTech) {
@@ -77,11 +84,7 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const loadPosts = (posts, container, isTech = false, isReflection = false) => posts.forEach((post, id) => addPostEntry(post, container, id, isTech, isReflection));
-
-    const reloadPosts = (container, posts, isTech = false, isReflection = false) => {
-        clearContainer(container);
-        loadPosts(posts, container, isTech, isReflection);
-    };
+    const reloadPosts = (container, posts, isTech = false, isReflection = false) => { clearContainer(container); loadPosts(posts, container, isTech, isReflection); };
 
     const showMainContent = () => {
         containers.postDetailView.style.display = 'none';
@@ -102,26 +105,6 @@ document.addEventListener('DOMContentLoaded', () => {
             .catch(err => containers.readMoreContent.innerHTML = `<p>Error: ${err}</p>`);
     };
 
-    const editPost = (post, id, isReflection) => {
-        ['title', 'author', 'date', 'text'].forEach(k => containers[`modal${k.charAt(0).toUpperCase() + k.slice(1)}`].value = post[k]);
-        toggleModal(true);
-        containers.modalForm.onsubmit = e => {
-            e.preventDefault();
-            ['title', 'author', 'date', 'text'].forEach(k => post[k] = containers[`modal${k.charAt(0).toUpperCase() + k.slice(1)}`].value);
-            saveData(isReflection ? 'reflections' : 'permanentPosts', isReflection ? reflections : permanentPosts);
-            reloadPosts(isReflection ? containers.reflectionEntries : containers.permanentPosts, isReflection ? reflections : permanentPosts);
-            toggleModal(false);
-        };
-    };
-
-    const deletePost = (id, postEl, isReflection) => {
-        const targetArray = isReflection ? reflections : permanentPosts;
-        targetArray.splice(id, 1);
-        if (!targetArray.length && !isReflection) defaultPermanentPosts.forEach(post => permanentPosts.push(post));
-        saveData(isReflection ? 'reflections' : 'permanentPosts', isReflection ? reflections : permanentPosts);
-        postEl.remove();
-    };
-
     const fetchTechPosts = () => {
         const tags = ['javascript', 'web-development', 'html', 'css'];
         const fetchPromises = tags.map(tag =>
@@ -137,12 +120,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 likeCount: 0,
                 dislikeCount: 0
             }));
-            allTechPosts.length ? displayTechPosts(0, postsPerPage) : containers.techPosts.append(createEl('p', { textContent: 'No tech posts available.' }));
+            filteredTechPosts = allTechPosts;
+            displayTechPosts(0, postsPerPage);
         }).catch(() => containers.techPosts.append(createEl('p', { textContent: 'Failed to load tech posts.' })));
     };
 
     const displayTechPosts = (start, count) => {
-        reloadPosts(containers.techPosts, allTechPosts.slice(start, start + count), true);
+        reloadPosts(containers.techPosts, filteredTechPosts.slice(start, start + count), true);
         updateButtons();
     };
 
@@ -150,18 +134,21 @@ document.addEventListener('DOMContentLoaded', () => {
         let loadMoreBtn = containers.techPosts.querySelector('.load-more');
         let loadLessBtn = containers.techPosts.querySelector('.load-less');
 
-        if (!loadMoreBtn && !loadLessBtn) {
+        if (!loadMoreBtn) {
             loadMoreBtn = createButton('Load More', 'load-more', loadMorePosts);
+            containers.techPosts.append(loadMoreBtn);
+        }
+        if (!loadLessBtn) {
             loadLessBtn = createButton('Load Less', 'load-less', loadLessPosts);
-            containers.techPosts.append(loadMoreBtn, loadLessBtn);
+            containers.techPosts.append(loadLessBtn);
         }
 
-        loadMoreBtn.style.display = currentIndex >= allTechPosts.length ? 'none' : 'block';
+        loadMoreBtn.style.display = currentIndex >= filteredTechPosts.length ? 'none' : 'block';
         loadLessBtn.style.display = currentIndex > postsPerPage ? 'block' : 'none';
     };
 
     const loadMorePosts = () => {
-        currentIndex = Math.min(currentIndex + postsPerPage, allTechPosts.length);
+        currentIndex = Math.min(currentIndex + postsPerPage, filteredTechPosts.length);
         displayTechPosts(0, currentIndex);
     };
 
@@ -170,18 +157,26 @@ document.addEventListener('DOMContentLoaded', () => {
         displayTechPosts(0, currentIndex);
     };
 
-    const toggleModal = show => containers.reflectionModal.classList.toggle('active', show);
+    const filterTechPosts = () => {
+        const filterDate = containers.techDateFilter.value;
+        filteredTechPosts = allTechPosts.filter(post => {
+            const matchesDate = filterDate ? post.date === filterDate : true;
+            return matchesDate;
+        });
+        displayTechPosts(0, postsPerPage);
+    };
+
+    const toggleModal = (show) => {
+        containers.reflectionModal.style.display = show ? 'block' : 'none';
+    };
 
     containers.homeButton.addEventListener('click', showMainContent);
     containers.modalClose.addEventListener('click', () => toggleModal(false));
 
-    const addNewReflectionButton = $('add-new-reflection');
-    if (addNewReflectionButton) {
-        addNewReflectionButton.addEventListener('click', () => {
-            containers.modalForm.reset();
-            toggleModal(true);
-        });
-    }
+    containers.addNewReflection.addEventListener('click', () => {
+        containers.modalForm.reset();
+        toggleModal(true);
+    });
 
     containers.modalForm.addEventListener('submit', e => {
         e.preventDefault();
@@ -199,6 +194,8 @@ document.addEventListener('DOMContentLoaded', () => {
         toggleModal(false);
         containers.modalForm.reset();
     });
+
+    containers.techDateFilter.addEventListener('change', filterTechPosts);
 
     loadPosts(reflections, containers.reflectionEntries, false, true);
     reloadPosts(containers.permanentPosts, permanentPosts);

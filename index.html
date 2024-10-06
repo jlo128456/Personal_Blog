@@ -4,75 +4,69 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Jeff's Reflections & Technical Blog</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="./style.css">
 </head>
 <body>
-    <div class="container">
-        <header>
-            <h1>Jeff's Reflections & Technical Blog</h1>
-        </header>
+    <header>
+        <h1>Jeff's Reflections & Technical Blog</h1>
+    </header>
 
-        <!-- Main Content Area (with all posts) -->
-        <main id="main-content">
-           
-            <!-- Permanent Posts Section -->
-            <section id="permanent-posts" class="section">
-                <h2>Permanent Posts</h2>
-                <div id="permanent-posts-container" class="permanent-posts">
-                    <!-- Permanent posts will be dynamically loaded here -->
-                </div>
-            </section>
+    <!-- Main Content -->
+    <div id="main-content">
+        <!-- Permanent Posts Section -->
+        <section id="permanent-posts-container">
+            <h2>Permanent Posts</h2>
+        </section>
 
-            <!-- Reflections Section -->
-            <section id="personal-journal" class="section">
-                <h2>Personal Reflections</h2>
-                <button id="add-new-reflection" class="btn">Add Reflection</button>
-                
-                <!-- Container for dynamically added reflection entries -->
-                <div id="reflection-entries" class="reflection-entries">
-                    <!-- Reflection entries will be dynamically loaded here -->
-                </div>
-            </section>
+        <!-- Reflection Entries Section -->
+        <section id="reflection-entries">
+            <h2>Personal Reflections</h2>
+            <button id="add-new-reflection" class="add-button">Add Reflection</button>
+        </section>
 
-            <!-- Technical Blog Section -->
-            <section id="tech-blog" class="section">
-                <h2>Technical Blog</h2>
-                <div id="tech-posts" class="tech-posts-card">
-                    <!-- Tech posts will be dynamically loaded here -->
-                </div>
-            </section>
-       
-        </main>
+        <!-- Technical Blog Section -->
+        <section id="tech-posts-section">
+            <h2 id="tech-blog-heading">Technical Blog</h2>
 
-        <!-- Post Detail View for "Read More" -->
-        <div id="post-detail-view" style="display: none;">
-            <!-- Added missing read-more-content div for rendering post content -->
-            <div id="read-more-content"></div>
-            <button id="home-button" class="btn">Home</button>
-        </div>
-
-        <!-- Modal for Adding/Editing Reflections -->
-        <div id="reflection-modal" class="modal">
-            <div class="modal-content">
-                <h2 id="modal-title">Add Reflection</h2>
-                <form id="modal-reflection-form">
-                    <input type="text" id="modal-reflection-title" placeholder="Title" required />
-                    <input type="text" id="modal-reflection-author" placeholder="Author" required />
-                    <input type="date" id="modal-reflection-date" required />
-                    <textarea id="modal-reflection-text" placeholder="Reflection" required></textarea>
-                    <button type="submit" class="btn">Save Reflection</button>
-                    <button type="button" id="modal-close" class="btn btn-close">Cancel</button>
-                </form>
+            <!-- Filter Options for Tech Posts -->
+            <div class="tech-filters">
+                <label for="tech-date-filter">Filter by Date:</label>
+                <input type="date" id="tech-date-filter">
             </div>
-        </div>
 
-        <!-- Footer -->
-        <footer>
-            <p>Contact me at <a href="mailto:j.lo128456@gmail.com"><strong>j.lo128456@gmail.com</strong></a></p>
-        </footer>
+            <!-- Container for Tech Posts -->
+            <div id="tech-posts" class="tech-posts"></div>
+        </section>
     </div>
 
-    <!-- Link to external JavaScript file -->
+    <!-- Modal for Adding/Editing Posts -->
+    <div id="reflection-modal" class="modal">
+        <div class="modal-content">
+            <form id="modal-reflection-form">
+                <label for="modal-reflection-title">Title</label>
+                <input type="text" id="modal-reflection-title" required>
+
+                <label for="modal-reflection-author">Author</label>
+                <input type="text" id="modal-reflection-author" required>
+
+                <label for="modal-reflection-date">Date</label>
+                <input type="date" id="modal-reflection-date" required>
+
+                <label for="modal-reflection-text">Text</label>
+                <textarea id="modal-reflection-text" required></textarea>
+
+                <button type="submit" class="save-button">Save</button>
+                <button type="button" id="modal-close" class="cancel-button">Cancel</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Post Detail View -->
+    <div id="post-detail-view" class="hidden">
+        <div id="read-more-content"></div>
+        <button id="home-button" class="home-button">Home</button>
+    </div>
+
     <script src="./src/main.js"></script>
 </body>
 </html>
