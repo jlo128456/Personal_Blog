@@ -49,23 +49,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const createButton = (text, className, onclick) => createEl('button', { textContent: text, className, onclick });
 
-    // Ensure that like/dislike buttons are appended properly
     const addPostEntry = (post, container, id = null, isTech = false, isReflection = false) => {
         const entry = createEl('div', { className: 'post-entry' });
-        
-        // Create like and dislike buttons
         const likeDislike = ['👍 Like', '👎 Dislike'].map((txt, i) => createButton(
             `${txt} (${i === 0 ? post.likeCount || 0 : post.dislikeCount || 0})`,
             i === 0 ? 'like-button' : 'dislike-button',
             () => handleLikeDislike(event.target, post, i === 0 ? 'like' : 'dislike', isReflection)
         ));
 
-        // Append the post details and buttons
         entry.append(
             createEl('h3', { textContent: post.title }),
             createEl('p', { textContent: post.date || 'No Date' }),
             createEl('p', { textContent: post.text || post.description }),
-            ...likeDislike // Spread the like/dislike buttons into the entry
+            createEl('div', { className: 'like-dislike-container' }, likeDislike)
         );
 
         if (isTech) {
@@ -94,6 +90,7 @@ document.addEventListener('DOMContentLoaded', () => {
         displayTechPosts(0, postsPerPage);
         document.body.style.backgroundColor = 'aquamarine';
         window.scrollTo(0, 0);
+        window.location.reload();  // Ensure the main page reloads completely
     };
 
     const openReadMorePage = url => {
@@ -120,7 +117,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 likeCount: 0,
                 dislikeCount: 0
             }));
-            filteredTechPosts = allTechPosts;
+            filteredTechPosts = allTechPosts; // Initial filter is all posts
             displayTechPosts(0, postsPerPage);
         }).catch(() => containers.techPosts.append(createEl('p', { textContent: 'Failed to load tech posts.' })));
     };
