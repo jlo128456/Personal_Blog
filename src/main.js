@@ -38,7 +38,13 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentIndex = postsPerPage;
 
     const createEl = (tag, props) => Object.assign(document.createElement(tag), props);
-    const clearContainer = container => container.replaceChildren();
+    const clearContainer = container => {
+        [...container.children].forEach(child => {
+            if (child.id !== 'add-new-reflection') {
+                child.remove();
+            }
+        });
+    };
     const saveData = (key, data) => storage.save(key, data);
 
     const handleLikeDislike = (btn, post, type, isReflection) => {
@@ -49,19 +55,35 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const createButton = (text, className, onclick) => createEl('button', { textContent: text, className, onclick });
 
+    const createLikeDislikeButtons = (post, isReflection) => {
+        // Create like and dislike buttons
+        const likeButton = createButton(
+            `👍 Like (${post.likeCount || 0})`,
+            'like-button',
+            () => handleLikeDislike(likeButton, post, 'like', isReflection)
+        );
+
+        const dislikeButton = createButton(
+            `👎 Dislike (${post.dislikeCount || 0})`,
+            'dislike-button',
+            () => handleLikeDislike(dislikeButton, post, 'dislike', isReflection)
+        );
+
+        const likeDislikeContainer = createEl('div', { className: 'like-dislike-container' });
+        likeDislikeContainer.append(likeButton, dislikeButton);
+
+        return likeDislikeContainer;
+    };
+
     const addPostEntry = (post, container, id = null, isTech = false, isReflection = false) => {
         const entry = createEl('div', { className: 'post-entry' });
-        const likeDislike = ['👍 Like', '👎 Dislike'].map((txt, i) => createButton(
-            `${txt} (${i === 0 ? post.likeCount || 0 : post.dislikeCount || 0})`,
-            i === 0 ? 'like-button' : 'dislike-button',
-            () => handleLikeDislike(event.target, post, i === 0 ? 'like' : 'dislike', isReflection)
-        ));
+        const likeDislikeContainer = createLikeDislikeButtons(post, isReflection);
 
         entry.append(
             createEl('h3', { textContent: post.title }),
             createEl('p', { textContent: post.date || 'No Date' }),
             createEl('p', { textContent: post.text || post.description }),
-            createEl('div', { className: 'like-dislike-container' }, likeDislike)
+            likeDislikeContainer // Add the like/dislike buttons
         );
 
         if (isTech) {
@@ -80,7 +102,10 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const loadPosts = (posts, container, isTech = false, isReflection = false) => posts.forEach((post, id) => addPostEntry(post, container, id, isTech, isReflection));
-    const reloadPosts = (container, posts, isTech = false, isReflection = false) => { clearContainer(container); loadPosts(posts, container, isTech, isReflection); };
+    const reloadPosts = (container, posts, isTech = false, isReflection = false) => {
+        clearContainer(container);
+        loadPosts(posts, container, isTech, isReflection);
+    };
 
     const showMainContent = () => {
         containers.postDetailView.style.display = 'none';
@@ -90,7 +115,7 @@ document.addEventListener('DOMContentLoaded', () => {
         displayTechPosts(0, postsPerPage);
         document.body.style.backgroundColor = 'aquamarine';
         window.scrollTo(0, 0);
-        window.location.reload();  // Ensure the main page reloads completely
+        window.location.reload();
     };
 
     const openReadMorePage = url => {
@@ -117,7 +142,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 likeCount: 0,
                 dislikeCount: 0
             }));
-            filteredTechPosts = allTechPosts; // Initial filter is all posts
+            filteredTechPosts = allTechPosts;
             displayTechPosts(0, postsPerPage);
         }).catch(() => containers.techPosts.append(createEl('p', { textContent: 'Failed to load tech posts.' })));
     };
@@ -156,10 +181,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const filterTechPosts = () => {
         const filterDate = containers.techDateFilter.value;
-        filteredTechPosts = allTechPosts.filter(post => {
-            const matchesDate = filterDate ? post.date === filterDate : true;
-            return matchesDate;
-        });
+        filteredTechPosts = allTechPosts.filter(post => post.date === filterDate);
         displayTechPosts(0, postsPerPage);
     };
 
