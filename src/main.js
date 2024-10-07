@@ -167,6 +167,37 @@ document.addEventListener('DOMContentLoaded', () => {
         containers.reflectionModal.style.display = show ? 'block' : 'none';
     };
 
+    const deletePost = (id, entry, isReflection) => {
+        const postsArray = isReflection ? reflections : permanentPosts;
+        postsArray.splice(id, 1);
+        saveData(isReflection ? 'reflections' : 'permanentPosts', postsArray);
+        entry.remove();
+        reloadPosts(isReflection ? containers.reflectionEntries : containers.permanentPosts, postsArray, false, isReflection);
+    };
+
+    const editPost = (post, id, isReflection) => {
+        containers.modalTitle.value = post.title;
+        containers.modalAuthor.value = post.author;
+        containers.modalDate.value = post.date;
+        containers.modalText.value = post.text;
+        toggleModal(true);
+
+        const handleSubmit = e => {
+            e.preventDefault();
+            post.title = containers.modalTitle.value;
+            post.author = containers.modalAuthor.value;
+            post.date = containers.modalDate.value;
+            post.text = containers.modalText.value;
+
+            saveData(isReflection ? 'reflections' : 'permanentPosts', isReflection ? reflections : permanentPosts);
+            reloadPosts(isReflection ? containers.reflectionEntries : containers.permanentPosts, isReflection ? reflections : permanentPosts, false, isReflection);
+            toggleModal(false);
+            containers.modalForm.removeEventListener('submit', handleSubmit);
+        };
+
+        containers.modalForm.addEventListener('submit', handleSubmit);
+    };
+
     containers.homeButton.addEventListener('click', showMainContent);
     containers.modalClose.addEventListener('click', () => toggleModal(false));
 
