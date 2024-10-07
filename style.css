@@ -3,72 +3,86 @@ body, html {
     margin: 0;
     padding: 0;
     font-family: 'Arial', 'Helvetica', sans-serif;
-    background-color: aquamarine;
+    background-color: aquamarine; /* Light cyan background for a softer look */
 }
 
+/* Container for centered layout */
 .container {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 20px;
+    padding: 25px;
 }
 
 /* Section styles */
 .section {
-    margin-bottom: 20px;
+    margin-bottom: 40px; /* Increased margin between sections */
 }
 
-/* Darker h1 header */
+/* Updated h1 for a modern look */
 h1 {
     font-family: 'Arial', 'Helvetica', sans-serif;
     font-weight: bold;
     font-size: 2.5rem;
-    color: black; /* Updated to black for a darker color */
+    color: black; /* Softer black */
     text-align: center;
 }
 
-/* Align h2 headers to the left and make the label color darker */
+/* Align h2 headers and update the color */
 h2 {
     font-family: 'Arial', 'Helvetica', sans-serif;
     font-weight: bold;
     font-size: 2rem;
-    color: black; /* Changed to black for darker color */
+    color: black;
     text-align: left;
     margin-bottom: 10px;
 }
 
-/* Flexbox layout for posts */
-#permanent-posts-container, #reflection-entries, #tech-posts {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
+/* Flexbox layout for all posts with reduced gap */
+/* Flexbox for all post containers */
+.permanent-posts, .reflection-entries, #tech-posts {
+    display: flex !important;  /* Ensure flex is applied */
+    flex-wrap: wrap;           /* Allow wrapping to new rows */
+    gap: 50px;                 /* Add space between cards */
     justify-content: space-between;
 }
 
-/* Common post-entry styling for all types of posts */
+/* Individual post card */
 .post-entry {
-    flex: 1 1 calc(33.333% - 40px); /* Three posts per row */
+    flex: 1 1 calc(25% - 100px);
     background-color: white;
-    border: 1px solid lightgray;
+    border: 1px solid #ddd;
     border-radius: 8px;
-    padding: 20px;
-    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
-    min-height: 300px;  /* Uniform height */
+    padding: 10px;
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.05);
+    min-height: 300px; /* Ensure all posts have the same minimum height */
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    justify-content: space-between; /* Spread out content */
+    transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smooth scaling effect on hover */
 }
 
 .post-entry:hover {
-    transform: scale(1.02);
-    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.15);
+    transform: scale(1.02); /* Slightly enlarge card on hover */
+    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.1); /* Add shadow on hover */
+}
+
+/* Font size for post content */
+.post-entry h3 {
+    font-size: 1.3em;
+    font-weight: 600;
+    color: black;
+}
+
+.post-entry p {
+    font-size: 1em;
+    color: dimgray; /* Softer text color */
 }
 
 /* Uniform Read More and other button styling */
 .post-entry a.read-more-link, button {
     margin-top: auto;
-    padding: 10px 20px;
-    background-color: dodgerblue;
+    padding: 12px 20px;
+    background-color: dodgerblue; /* Modern blue */
     color: white;
     border: none;
     border-radius: 8px;
@@ -79,13 +93,13 @@ h2 {
 }
 
 button:hover, .read-more-link:hover {
-    background-color: royalblue;
-    transform: scale(1.05);
+    background-color: darkblue; /* Darker blue on hover */
+    transform: translateY(-2px);
 }
 
 /* Like and Dislike button styling */
 .like-button, .dislike-button {
-    background-color: white;
+    background-color: whitesmoke;
     color: black;
     border: 1px solid lightgray;
     border-radius: 5px;
@@ -93,7 +107,7 @@ button:hover, .read-more-link:hover {
     margin-top: auto;
     padding: 10px 15px;
     transition: background-color 0.3s ease, color 0.3s ease;
-}  
+}
 
 .like-button:hover, .dislike-button:hover {
     background-color: dodgerblue;
@@ -135,7 +149,7 @@ button:hover, .read-more-link:hover {
     display: none;
     padding: 20px;
     background-color: white;
-    border-radius: 8px;
+    border-radius: 10px;
     box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
 }
 
@@ -146,45 +160,13 @@ button:hover, .read-more-link:hover {
     justify-content: space-between;
 }
 
-/* Responsive layout for smaller screens */
-@media (max-width: 1024px) {
-    .post-entry {
-        flex: 1 1 calc(50% - 40px); /* Two posts per row on tablet */
-    }
-}
-
-@media (max-width: 768px) {
-    .post-entry {
-        flex: 1 1 100%; /* Full width on mobile */
-    }
-}
-
-/* Date filter styling */
-.date-filter {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-bottom: 20px;
-}
-
-#tech-date-filter {
-    padding: 10px;
-    font-size: 1rem;
-    border: 1px solid lightgray;
-    border-radius: 5px;
-}
-
-/* Align Add Reflection button to the left */
-.add-button {
-    display: flex;
-    justify-content: flex-start; /* Moves the button to the left */
-    align-items: center;
-    margin-bottom: 10px;
-}
-
+/* Center Add Reflection button */
 #add-new-reflection {
-    margin-left: 0; /* Align to the left */
-    padding: 10px 20px;
+    display: flex;
+    margin-right: 92%;
+    margin-left: auto;
+    margin-top: 0px;
+    
     background-color: dodgerblue;
     color: white;
     border: none;
@@ -194,5 +176,36 @@ button:hover, .read-more-link:hover {
 }
 
 #add-new-reflection:hover {
-    background-color: royalblue;
+    background-color: darkblue;
+}
+
+/* Footer styling */
+#footer-container {
+    background-color: whitesmoke;
+    padding: 20px;
+    text-align: center;
+    margin-top: 40px;
+    border-top: 1px solid gray;
+}
+
+#footer-container a {
+    color: dodgerblue;
+    text-decoration: none;
+}
+
+#footer-container a:hover {
+    text-decoration: underline;
+}
+
+/* Responsive layout for smaller screens */
+@media (max-width: 1024px) {
+    .post-entry {
+        width: calc(50% - 20px); /* Two posts per row on tablet */
+    }
+}
+
+@media (max-width: 768px) {
+    .post-entry {
+        width: 100%; /* Full width on mobile */
+    }
 }
