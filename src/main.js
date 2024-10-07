@@ -26,15 +26,17 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const defaultPermanentPosts = [
-        { title: "Researching API Key Hiding", author: "Jeff", date: "2024-09-01", text: "After a few hours of researching on Google and Stack Overflow, I was able to learn how to hide my API key from the outside world using an environment file. After a few attempts, I achieved my objective.", likeCount: 0, dislikeCount: 0 },
-        { title: "Writing a Blog", author: "Jeff", date: "2024-09-18", text: "Over the past two days, I started writing my technical blog and posted it on Dev.to. I believe I did the best I could on the topic of 'Why you should hide your API key.", likeCount: 0, dislikeCount: 0 }
+        { title: "Researching API Key Hiding", author: "Jeff", date: "2024-09-01", text: "After a few hours of researching on Google and Stack Overflow, I was able to learn how to hide my API key from the outside world using an environment file. After a few attempts, I achieved my objective.", likeCount: 3, dislikeCount: 3 },
+        { title: "Writing a Blog", author: "Jeff", date: "2024-09-18", text: "Over the past two days, I started writing my technical blog and posted it on Dev.to. I believe I did the best I could on the topic of 'Why you should hide your API key.'", likeCount: 0, dislikeCount: 0 },
+        { title: "Completing Phase-1 Review", author: "Jeff", date: "2024-10-12", text: "I just completed my Phase-1 project review. After some feedback, I had to add additional functionality and I am now waiting for another review to move forward.", likeCount: 0, dislikeCount: 0 }
     ];
+    
 
     let permanentPosts = storage.load('permanentPosts').length ? storage.load('permanentPosts') : defaultPermanentPosts;
     let reflections = storage.load('reflections');
     let allTechPosts = [];
     let filteredTechPosts = [];
-    let postsPerPage = 5;
+    let postsPerPage = 9;
     let currentIndex = postsPerPage;
 
     const createEl = (tag, props) => Object.assign(document.createElement(tag), props);

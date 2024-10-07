@@ -37,33 +37,43 @@ h2 {
     margin-bottom: 10px;
 }
 
-/* Flexbox layout for all posts with reduced gap */
-/* Flexbox for all post containers */
-.permanent-posts, .reflection-entries, #tech-posts {
-    display: flex !important;  /* Ensure flex is applied */
-    flex-wrap: wrap;           /* Allow wrapping to new rows */
-    gap: 50px;                 /* Add space between cards */
+
+/* Flexbox layout for all posts with increased gap */
+#permanent-posts-container, #reflection-entries, #tech-posts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px; /* Adjusted gap between cards */
     justify-content: space-between;
 }
 
-/* Individual post card */
+/* Unified post-entry styling for all types of posts */
 .post-entry {
-    flex: 1 1 calc(25% - 100px);
+    width:calc(25% - -77px); /* Three posts per row with added space */
     background-color: white;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    padding: 10px;
-    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.05);
-    min-height: 300px; /* Ensure all posts have the same minimum height */
+    border: 1px solid lightgray;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 20px; /* Ensure vertical space between rows */
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* Soft shadow */
+    height: 340px;
     display: flex;
     flex-direction: column;
-    justify-content: space-between; /* Spread out content */
-    transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smooth scaling effect on hover */
+    justify-content: space-between;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer; /* Add cursor change on hover */
 }
 
+/* Hover effect for ALL posts */
 .post-entry:hover {
-    transform: scale(1.02); /* Slightly enlarge card on hover */
-    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.1); /* Add shadow on hover */
+    transform: translateY(-10px); /* Apply hover lift effect */
+    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.15); /* Stronger shadow on hover */
+    background-color: #f9f9f9; /* Slight background color change on hover */
+}
+
+/* Button hover effect */
+button:hover {
+    background-color: darkblue;
+    transform: translateY(-2px);
 }
 
 /* Font size for post content */
@@ -77,10 +87,33 @@ h2 {
     font-size: 1em;
     color: dimgray; /* Softer text color */
 }
+/* Container for buttons to ensure they are aligned horizontally */
+.button-container {
+    display: flex;
+    justify-content: space-between; /* Ensures the buttons are aligned with space between them */
+    gap: 10px; /* Adds gap between the buttons */
+}
+
+/* Button styles */
+.post-entry button {
+    flex: 1; /* Ensures buttons take equal width */
+    padding: 10px 20px;
+    color: black;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    text-align: center;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.post-entry button:hover {
+    background-color: darkblue;
+    transform: translateY(-2px);
+}
 
 /* Uniform Read More and other button styling */
 .post-entry a.read-more-link, button {
-    margin-top: auto;
+    margin-top: 5px;
     padding: 12px 20px;
     background-color: dodgerblue; /* Modern blue */
     color: white;
@@ -104,15 +137,16 @@ button:hover, .read-more-link:hover {
     border: 1px solid lightgray;
     border-radius: 5px;
     cursor: pointer;
-    margin-top: auto;
     padding: 10px 15px;
     transition: background-color 0.3s ease, color 0.3s ease;
+    margin-bottom: 5px; /* Reduce space between buttons and Read More */
 }
 
 .like-button:hover, .dislike-button:hover {
-    background-color: dodgerblue;
-    color: white;
+    background-color: lightgray; /* Remove blue, keep it neutral */
+    color: black; /* Keep the text color black on hover */
 }
+
 
 /* Modal styling */
 .modal {
