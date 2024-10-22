@@ -3,7 +3,7 @@ body, html {
     margin: 0;
     padding: 0;
     font-family: 'Arial', 'Helvetica', sans-serif;
-    background-color: aquamarine; /* Light cyan background for a softer look */
+    background-color: aquamarine;
 }
 
 /* Container for centered layout */
@@ -15,19 +15,18 @@ body, html {
 
 /* Section styles */
 .section {
-    margin-bottom: 40px; /* Increased margin between sections */
+    margin-bottom: 40px;
 }
 
-/* Updated h1 for a modern look */
+/* Heading styles */
 h1 {
     font-family: 'Arial', 'Helvetica', sans-serif;
     font-weight: bold;
     font-size: 2.5rem;
-    color: black; /* Softer black */
+    color: black;
     text-align: center;
 }
 
-/* Align h2 headers and update the color */
 h2 {
     font-family: 'Arial', 'Helvetica', sans-serif;
     font-weight: bold;
@@ -37,46 +36,44 @@ h2 {
     margin-bottom: 10px;
 }
 
-
-/* Flexbox layout for all posts with increased gap */
+/* Flexbox layout for all post sections */
 #permanent-posts-container, #reflection-entries, #tech-posts {
     display: flex;
     flex-wrap: wrap;
-    gap: 20px; /* Adjusted gap between cards */
+    gap: 20px;
     justify-content: space-between;
 }
 
-/* Unified post-entry styling for all types of posts */
+/* Post entry styles */
 .post-entry {
-    width:calc(25% - -77px); /* Three posts per row with added space */
+    width: calc(28%); /* Ensures three cards per row */
     background-color: white;
     border: 1px solid lightgray;
-    border-radius: 10px;
+    border-radius: 13px;
     padding: 20px;
-    margin-bottom: 20px; /* Ensure vertical space between rows */
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* Soft shadow */
-    height: 340px;
+    margin-bottom: 20px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    height: 360px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
-    cursor: pointer; /* Add cursor change on hover */
+    cursor: pointer;
 }
 
-/* Hover effect for ALL posts */
+/* Hover effects */
 .post-entry:hover {
-    transform: translateY(-10px); /* Apply hover lift effect */
-    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.15); /* Stronger shadow on hover */
-    background-color: #f9f9f9; /* Slight background color change on hover */
+    transform: translateY(-10px);
+    box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.15);
+    background-color: #f9f9f9;
 }
 
-/* Button hover effect */
 button:hover {
     background-color: darkblue;
     transform: translateY(-2px);
 }
 
-/* Font size for post content */
+/* Post content styling */
 .post-entry h3 {
     font-size: 1.3em;
     font-weight: 600;
@@ -85,18 +82,19 @@ button:hover {
 
 .post-entry p {
     font-size: 1em;
-    color: dimgray; /* Softer text color */
+    color: dimgray;
 }
-/* Container for buttons to ensure they are aligned horizontally */
+
+/* Button container for horizontal alignment */
 .button-container {
     display: flex;
-    justify-content: space-between; /* Ensures the buttons are aligned with space between them */
-    gap: 10px; /* Adds gap between the buttons */
+    justify-content: space-between;
+    gap: 10px;
 }
 
 /* Button styles */
 .post-entry button {
-    flex: 1; /* Ensures buttons take equal width */
+    flex: 1;
     padding: 10px 20px;
     color: black;
     border: none;
@@ -106,16 +104,10 @@ button:hover {
     transition: background-color 0.3s ease, transform 0.3s ease;
 }
 
-.post-entry button:hover {
-    background-color: darkblue;
-    transform: translateY(-2px);
-}
-
-/* Uniform Read More and other button styling */
 .post-entry a.read-more-link, button {
     margin-top: 5px;
     padding: 12px 20px;
-    background-color: dodgerblue; /* Modern blue */
+    background-color: dodgerblue;
     color: white;
     border: none;
     border-radius: 8px;
@@ -126,7 +118,7 @@ button:hover {
 }
 
 button:hover, .read-more-link:hover {
-    background-color: darkblue; /* Darker blue on hover */
+    background-color: darkblue;
     transform: translateY(-2px);
 }
 
@@ -139,14 +131,13 @@ button:hover, .read-more-link:hover {
     cursor: pointer;
     padding: 10px 15px;
     transition: background-color 0.3s ease, color 0.3s ease;
-    margin-bottom: 5px; /* Reduce space between buttons and Read More */
+    margin-bottom: 5px;
 }
 
 .like-button:hover, .dislike-button:hover {
-    background-color: lightgray; /* Remove blue, keep it neutral */
-    color: black; /* Keep the text color black on hover */
+    background-color: lightgray;
+    color: black;
 }
-
 
 /* Modal styling */
 .modal {
@@ -187,20 +178,12 @@ button:hover, .read-more-link:hover {
     box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
 }
 
-/* Flexbox layout fixes */
-#permanent-posts-container, #reflection-entries, #tech-posts {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-}
-
 /* Center Add Reflection button */
 #add-new-reflection {
     display: flex;
     margin-right: 92%;
     margin-left: auto;
     margin-top: 0px;
-    
     background-color: dodgerblue;
     color: white;
     border: none;
@@ -229,17 +212,4 @@ button:hover, .read-more-link:hover {
 
 #footer-container a:hover {
     text-decoration: underline;
-}
-
-/* Responsive layout for smaller screens */
-@media (max-width: 1024px) {
-    .post-entry {
-        width: calc(50% - 20px); /* Two posts per row on tablet */
-    }
-}
-
-@media (max-width: 768px) {
-    .post-entry {
-        width: 100%; /* Full width on mobile */
-    }
 }
