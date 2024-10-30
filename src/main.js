@@ -38,7 +38,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let filteredTechPosts = [];
     let postsPerPage = 9;
     let currentIndex = postsPerPage;
-
+//use .foreach() to create elements
     const createEl = (tag, props) => Object.assign(document.createElement(tag), props);
     const clearContainer = container => {
         [...container.children].forEach(child => {
@@ -128,7 +128,7 @@ document.addEventListener('DOMContentLoaded', () => {
             .then(data => containers.readMoreContent.innerHTML = data)
             .catch(err => containers.readMoreContent.innerHTML = `<p>Error: ${err}</p>`);
     };
-
+//use of .map to fetch tech post 
     const fetchTechPosts = () => {
         const tags = ['javascript', 'web-development', 'html', 'css'];
         const fetchPromises = tags.map(tag =>
@@ -221,7 +221,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         containers.modalForm.addEventListener('submit', handleSubmit);
     };
-
+//event listner "click"
     containers.homeButton.addEventListener('click', showMainContent);
     containers.modalClose.addEventListener('click', () => toggleModal(false));
 
@@ -229,7 +229,7 @@ document.addEventListener('DOMContentLoaded', () => {
         containers.modalForm.reset();
         toggleModal(true);
     });
-
+// event listner "submit"
     containers.modalForm.addEventListener('submit', e => {
         e.preventDefault();
         const reflection = {
@@ -246,7 +246,7 @@ document.addEventListener('DOMContentLoaded', () => {
         toggleModal(false);
         containers.modalForm.reset();
     });
-
+//event listner change to filter tech post
     containers.techDateFilter.addEventListener('change', filterTechPosts);
 
     loadPosts(reflections, containers.reflectionEntries, false, true);
